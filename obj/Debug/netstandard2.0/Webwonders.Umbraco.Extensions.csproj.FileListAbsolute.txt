@@ -1,0 +1,10 @@
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.deps.json
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.dll
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.pdb
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.csproj.AssemblyReference.cache
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.AssemblyInfoInputs.cache
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.AssemblyInfo.cs
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.csproj.CoreCompileInputs.cache
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.dll
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.pdb

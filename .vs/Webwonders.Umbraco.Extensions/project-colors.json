@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "9d5cd605-524c-4864-aa6f-50bf4a0be217": {
+      "ProjectGuid": "9d5cd605-524c-4864-aa6f-50bf4a0be217",
+      "DisplayName": "Webwonders.Umbraco.Extensions",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

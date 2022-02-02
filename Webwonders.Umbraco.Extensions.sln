@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webwonders.Umbraco.Extensions", "Webwonders.Umbraco.Extensions.csproj", "{9D5CD605-524C-4864-AA6F-50BF4A0BE217}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D5CD605-524C-4864-AA6F-50BF4A0BE217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D5CD605-524C-4864-AA6F-50BF4A0BE217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D5CD605-524C-4864-AA6F-50BF4A0BE217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D5CD605-524C-4864-AA6F-50BF4A0BE217}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {369B594F-FE00-42ED-8963-166C3BF02327}
+	EndGlobalSection
+EndGlobal
