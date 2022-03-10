@@ -1,0 +1,29 @@
+name: Deploy Nuget
+
+on: 
+  release:
+    released:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Umbraco Webwonders Startup'  
+
+jobs:
+  NugetDeploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Publish NuGet
+      uses: rohith/publish-nuget@v2.5.5
+      with:
+        PROJECT_FILE_PATH: Webwonders.Umbraco.Startup.csproj
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        PACKAGE_NAME: Webwonders.Umbraco.Startup
