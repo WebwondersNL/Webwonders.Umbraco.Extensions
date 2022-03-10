@@ -8,7 +8,7 @@ on:
         required: true
         default: 'warning'
       tags:
-        description: 'Umbraco Webwonders Startup'  
+        description: 'Umbraco Webwonders Extensions'  
 
 jobs:
   NugetDeploy:
@@ -24,6 +24,6 @@ jobs:
     - name: Publish NuGet
       uses: rohith/publish-nuget@v2.5.5
       with:
-        PROJECT_FILE_PATH: Webwonders.Umbraco.Startup.csproj
+        PROJECT_FILE_PATH: Webwonders.Umbraco.Extensions.csproj
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-        PACKAGE_NAME: Webwonders.Umbraco.Startup
+        PACKAGE_NAME: Webwonders.Umbraco.Extensions
