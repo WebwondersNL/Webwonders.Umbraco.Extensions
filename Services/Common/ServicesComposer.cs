@@ -1,5 +1,6 @@
-﻿using Umbraco.Core;
-using Umbraco.Core.Composing;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Umbraco.Cms.Core.Composing;
+using Umbraco.Cms.Core.DependencyInjection;
 using Webwonders.Services;
 
 namespace Wewonders.Services
@@ -7,16 +8,17 @@ namespace Wewonders.Services
 
     /*
      * 
-     * To keep order of services correct: all IUsercomposers in one file
+     * To keep order of services correct: all IComposers in one file
      * 
      */
-    public class ServicesComposer : IUserComposer
+    public class ServicesComposer : IComposer
     {
-        public void Compose(Composition composition)
+        public void Compose(IUmbracoBuilder builder)
         {
             // Services
-            composition.Register<IWWSpreadsheetHandlerService, WWSpreadsheetHandlerService>(); // Spreadsheethandler
-            composition.Register<IWWCacheHandlingService, WWCacheHandlingService>();
+            builder.Services.AddScoped<IWWSpreadsheetHandlerService, WWSpreadsheetHandlerService>(); 
+            builder.Services.AddSingleton<IWWCacheHandlingService, WWCacheHandlingService>();
+            builder.Services.AddScoped<IWWSearchService, WWSearchService>();
         }
     }
 }
