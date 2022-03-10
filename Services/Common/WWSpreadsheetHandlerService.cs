@@ -7,7 +7,8 @@ using Webwonders.Models;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
+using Microsoft.Extensions.Logging;
+using Umbraco.Extensions;
 
 namespace Webwonders.Services
 {
@@ -42,7 +43,7 @@ namespace Webwonders.Services
         }
 
 
-        public WWSpreadsheetHandlerService(ILogger logger)
+        public WWSpreadsheetHandlerService(ILogger<WWSpreadsheetHandlerService> logger)
         {
             _logger = logger;
         }
@@ -160,7 +161,7 @@ namespace Webwonders.Services
                                             }
                                             else
                                             {
-                                                _logger.Error(this.GetType(), $"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
+                                                _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
                                             }
                                         }
                                         ColumnNames.Add(currentCellValue);
@@ -219,7 +220,7 @@ namespace Webwonders.Services
                                                     }
                                                     else
                                                     {
-                                                        _logger.Error(this.GetType(), $"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum - 1},  column {i}. Row is skipped.");
+                                                        _logger.LogError($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum - 1},  column {i}. Row is skipped.");
                                                     }
                                                 }
                                                 else
