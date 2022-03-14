@@ -3,12 +3,6 @@ name: Deploy Nuget
 on: 
   release:
     types: [released]
-    logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-    tags:
-        description: 'Umbraco Webwonders Extensions'  
 
 jobs:
   NugetDeploy:
