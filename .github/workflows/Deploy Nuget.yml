@@ -2,7 +2,7 @@ name: Deploy Nuget
 
 on: 
   release:
-    types: released
+    types: [released]
     logLevel:
         description: 'Log level'     
         required: true
