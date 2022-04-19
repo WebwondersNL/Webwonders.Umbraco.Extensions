@@ -16,9 +16,10 @@ namespace Wewonders.Services
         public void Compose(IUmbracoBuilder builder)
         {
             // Services
-            builder.Services.AddScoped<IWWSpreadsheetHandlerService, WWSpreadsheetHandlerService>(); 
-            builder.Services.AddSingleton<IWWCacheHandlingService, WWCacheHandlingService>();
             builder.Services.AddScoped<IWWSearchService, WWSearchService>();
+            builder.Services.AddScoped<IWWFilterService, WWFilterService>();
+            builder.Services.AddSingleton<IWWCacheHandlingService, WWCacheHandlingService>();
+            builder.Services.AddScoped<IWWSpreadsheetHandlerService, WWSpreadsheetHandlerService>();
         }
     }
 }

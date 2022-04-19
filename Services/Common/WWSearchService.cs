@@ -4,10 +4,12 @@ using System.Linq;
 using Examine;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PublishedCache;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Examine;
+using Umbraco.Extensions;
 using Webwonders.Models;
 using static Umbraco.Cms.Core.Constants;
 
@@ -15,7 +17,7 @@ namespace Webwonders.Services
 {
     public interface IWWSearchService
     {
-        List<ISearchResult> Search(WWSearchParameters searchParameters);
+        List<T> Search<T>(WWSearchParameters searchParameters) where T : IPublishedContent;
     }
 
 
@@ -23,30 +25,35 @@ namespace Webwonders.Services
     public class WWSearchService : IWWSearchService
     {
 
-        private readonly IUmbracoContextFactory _context;
-        private readonly IPublishedSnapshotAccessor _snapshotAccessor;
-        private readonly IPublishedValueFallback _publishedValueFallback;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IExamineManager _examineManager;
+        private readonly IUmbracoMapper _mapper;
         private readonly ILogger _logger;
 
         private const string HideInSiteSearch = "hideInSiteSearch";
         private const string TrueString = "1";
 
 
-        public WWSearchService(IUmbracoContextFactory context, IPublishedSnapshotAccessor snapshotAccessor, IPublishedValueFallback publishedValueFallback, IExamineManager examineManager, ILogger logger)
+        public WWSearchService(IUmbracoContextFactory umbracoContextFactory, IExamineManager examineManager, IUmbracoMapper mapper,ILogger logger)
         {
-            _context = context;
-            _snapshotAccessor = snapshotAccessor;
-            _publishedValueFallback = publishedValueFallback;
+            _umbracoContextFactory = umbracoContextFactory;
             _examineManager = examineManager;
+            _mapper = mapper;
             _logger = logger;
         }
 
 
-        public List<ISearchResult> Search(WWSearchParameters searchParameters)
+        /// <summary>
+        /// Common search procedure: external index, all content except hideInSiteSearch
+        /// Note: when T is NOT IPublishedContent a mapper from ISearchResult to T needs to be defined
+        /// </summary>
+        /// <typeparam name="T">Type of result - when not IPublishedContent a mapper from ISearchResult is necessary</typeparam>
+        /// <param name="searchParameters"></param>
+        /// <returns></returns>
+        public List<T> Search<T>(WWSearchParameters searchParameters) where T : IPublishedContent
         {
 
-            List<ISearchResult> result = new List<ISearchResult>();
+            List<T> result = new List<T>();
 
             try
             {
@@ -63,6 +70,8 @@ namespace Webwonders.Services
                                                     .ManagedQuery(searchParameters.SearchString) // all fields
                                                     .Not().Field(HideInSiteSearch, TrueString) // Keep last: only content that is not hidden from sitesearch
                                                     .Execute();
+                // TODO test cultural behaviour
+                // add culture? query.GroupedOr(String.Format(SearchFields, currentCulture).Split(','), searchTerm);
 
                 // TODO add pageIndex and pageSize to query:
                 //This should be the correct way to do this but there is still a bug with the umbraco core code.
@@ -71,15 +80,24 @@ namespace Webwonders.Services
                 //ISearchResults searchResult = examineQuery.Execute(queryOptions);
                 //IEnumerable<ISearchResult> pagedResults = searchResult;
 
-                using UmbracoContextReference contextReference = _context.EnsureUmbracoContext();
-                IUmbracoContext umbracoContext = contextReference.UmbracoContext;
+               
                 if (searchParameters.SearchPriority == null || !searchParameters.SearchPriority.Any())
                 {
                     // defaultorder
                     foreach (ISearchResult searchResult in allSearchResults)
                     {
-                        //result.Add(new WWSearchResult(umbracoContext.Content.GetById(int.Parse(searchResult.Id)), _snapshotAccessor, _publishedValueFallback, searchParameters.Culture));
-                        result.Add(searchResult);
+                        if (typeof(T) == typeof(IPublishedContent))
+                        {
+                            using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
+                            {
+                                if (umbracoContextReference.UmbracoContext.Content.GetById(searchResult.Id) is IPublishedContent overviewPage)
+                                {
+                                }
+                            }
+                        else
+                        {
+                            result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                        }
                     }
                 }
                 else
@@ -94,8 +112,7 @@ namespace Webwonders.Services
                                 result.Where(x => x.Id.ToString() == searchResult.Id)?.Any() == false)
 
                             {
-                                //result.Add(new WWSearchResult(umbracoContext.Content.GetById(int.Parse(searchResult.Id)), _snapshotAccessor, _publishedValueFallback, searchParameters.Culture));
-                                result.Add(searchResult);
+                                result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
                             }
                         }
                     }
@@ -104,12 +121,9 @@ namespace Webwonders.Services
                     {
                         if (result.Where(x => x.Id.ToString() == searchResult.Id) == null)
                         {
-                            //result.Add(new WWSearchResult(umbracoContext.Content.GetById(int.Parse(searchResult.Id)), _snapshotAccessor, _publishedValueFallback, searchParameters.Culture));
-                            result.Add(searchResult);
+                            result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
                         }
                     }
-
-
                 }
             }
             catch (Exception ex)
