@@ -16,10 +16,24 @@ namespace Webwonders.Services
 
     public interface IWWFilterService
     {
+        /// <summary>
+        /// Adds filtering to the overviewDto
+        /// </summary>
+        /// <typeparam name="TFilters">Type of FiltersCollectionPage</typeparam>
+        /// <typeparam name="TFilter">Type of Filter Page</typeparam>
+        /// <typeparam name="TItem">Type of item of overview</typeparam>
+        /// <typeparam name="TItemDto">Type of itemDTO to pass to front</typeparam>
+        /// <param name="overviewDto"></param>
+        /// <param name="allItems">All items on the overview</param>
+        /// <param name="filterPage">Parentpage of all filters</param>
+        /// <param name="filterGroups">List of (FilterGroupName, Property Alias of this FilterGroup on item)</param>
+        /// <param name="tFilterPropertyAliasOfName">Property alias of Name property of filter</param>
+        /// <returns>OverviewDto with Filters</returns>
         OverviewDto<TItemDto> AddFilter<TFilters, TFilter, TItem, TItemDto>(OverviewDto<TItemDto> overviewDto,
-                                                                                    List<TItem> allItems,
-                                                                                    List<(string filterGroupName, string itemFilterPropertyAlias, TFilters filterPage)> filterGroups,
-                                                                                    string filterNamePropertyAlias)
+                                                             List<TItem> allItems,
+                                                             TFilters filtersPage,
+                                                             List<(string filterGroupName, string itemFilterPropertyAlias)> filterGroups,
+                                                             string tFilterPropertyAliasOfName)
             where TFilters : IPublishedContent
             where TFilter : PublishedContentModel, IPublishedContent
             where TItem : IPublishedContent
@@ -56,19 +70,19 @@ namespace Webwonders.Services
 
         public OverviewDto<TItemDto> AddFilter<TFilters, TFilter, TItem, TItemDto>(OverviewDto<TItemDto> overviewDto,
                                                                      List<TItem> allItems,
-                                                                     List<(string filterGroupName, string itemFilterPropertyAlias, TFilters filterPage)> filterGroups,
-                                                                     string filterPropertyAlias)
+                                                                     TFilters filterPage,
+                                                                     List<(string filterGroupName, string itemFilterPropertyAlias)> filterGroups,
+                                                                     string tFilterPropertyAliasOfName)
             where TFilters : IPublishedContent
             where TFilter : PublishedContentModel, IPublishedContent
             where TItem : IPublishedContent
             where TItemDto : BaseFilter
         {
-
-            foreach (var (filterGroupName, itemFilterPropertyAlias, filterPage) in filterGroups.Where(x => !String.IsNullOrWhiteSpace(x.filterGroupName) && x.filterPage != null))
+            foreach (var (filterGroupName, itemFilterPropertyAlias) in filterGroups.Where(x => !String.IsNullOrWhiteSpace(x.filterGroupName)))
             {
                 var allFilters = new List<FilterDto>();
 
-                IEnumerable<TFilter> filterList = filterPage.Children.OfType<TFilter>().Where(x => x.IsVisible(_publishedValueFallback));
+                IEnumerable<TFilter> filterList = filterPage.Descendants(_variationContextAccessor).OfType<TFilter>().Where(x => x.IsVisible(_publishedValueFallback));
 
                 foreach (var item in filterList)
                 {
@@ -76,7 +90,7 @@ namespace Webwonders.Services
                     FilterDto filter = new FilterDto()
                     {
                         Id = item.Id,
-                        Name = item.Value<string>(_publishedValueFallback, filterPropertyAlias, overviewDto.OverviewFilter.Culture)
+                        Name = item.Value<string>(_publishedValueFallback, tFilterPropertyAliasOfName, overviewDto.OverviewFilter.Culture)
                     };
                     if (String.IsNullOrWhiteSpace(filter.Name))
                     {
@@ -84,7 +98,7 @@ namespace Webwonders.Services
                     }
 
                     allFilters.Add(filter);
-                }
+                } 
 
                 // Get all used Filters:
                 // from allItems select the filterProperty

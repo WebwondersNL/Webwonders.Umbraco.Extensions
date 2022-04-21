@@ -34,7 +34,7 @@ namespace Webwonders.Services
         private const string TrueString = "1";
 
 
-        public WWSearchService(IUmbracoContextFactory umbracoContextFactory, IExamineManager examineManager, IUmbracoMapper mapper,ILogger logger)
+        public WWSearchService(IUmbracoContextFactory umbracoContextFactory, IExamineManager examineManager, IUmbracoMapper mapper, ILogger logger)
         {
             _umbracoContextFactory = umbracoContextFactory;
             _examineManager = examineManager;
@@ -49,7 +49,7 @@ namespace Webwonders.Services
         /// </summary>
         /// <typeparam name="T">Type of result - when not IPublishedContent a mapper from ISearchResult is necessary</typeparam>
         /// <param name="searchParameters"></param>
-        /// <returns></returns>
+        /// <returns>A list of T as result of the search, possibly sorted in the order of SearchParameters.SearchPriority</returns>
         public List<T> Search<T>(WWSearchParameters searchParameters) where T : IPublishedContent
         {
 
@@ -65,6 +65,9 @@ namespace Webwonders.Services
                 {
                     throw new InvalidOperationException($"No index found by name {UmbracoIndexes.ExternalIndexName}");
                 }
+
+                using var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext();
+
                 ISearcher searcher = index.Searcher;
                 ISearchResults allSearchResults = searcher.CreateQuery(IndexTypes.Content)
                                                     .ManagedQuery(searchParameters.SearchString) // all fields
@@ -80,7 +83,7 @@ namespace Webwonders.Services
                 //ISearchResults searchResult = examineQuery.Execute(queryOptions);
                 //IEnumerable<ISearchResult> pagedResults = searchResult;
 
-               
+
                 if (searchParameters.SearchPriority == null || !searchParameters.SearchPriority.Any())
                 {
                     // defaultorder
@@ -88,12 +91,11 @@ namespace Webwonders.Services
                     {
                         if (typeof(T) == typeof(IPublishedContent))
                         {
-                            using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
+                            if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
                             {
-                                if (umbracoContextReference.UmbracoContext.Content.GetById(searchResult.Id) is IPublishedContent overviewPage)
-                                {
-                                }
+                                result.Add((T)resultpage);
                             }
+                        }
                         else
                         {
                             result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
@@ -112,7 +114,17 @@ namespace Webwonders.Services
                                 result.Where(x => x.Id.ToString() == searchResult.Id)?.Any() == false)
 
                             {
-                                result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                                if (typeof(T) == typeof(IPublishedContent))
+                                {
+                                    if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
+                                    {
+                                        result.Add((T)resultpage);
+                                    }
+                                }
+                                else
+                                {
+                                    result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                                }
                             }
                         }
                     }
@@ -121,7 +133,17 @@ namespace Webwonders.Services
                     {
                         if (result.Where(x => x.Id.ToString() == searchResult.Id) == null)
                         {
-                            result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                            if (typeof(T) == typeof(IPublishedContent))
+                            {
+                                if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
+                                {
+                                    result.Add((T)resultpage);
+                                }
+                            }
+                            else
+                            {
+                                result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                            }
                         }
                     }
                 }
