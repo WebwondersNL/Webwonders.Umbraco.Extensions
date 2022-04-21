@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Z5DFd+aAiOJ80TuuowPZVgkgQ9SBHBqPRkv8Vk90jGOFlij1V1cY2P7RyjVtuzX7LsqbIp9Far552+vRlstSMw==",
+  "dgSpecHash": "wBLM/AUKqamrorEIbnzcxHyPobRurbQ/GtysnZSvHUKrBTRYwyiaaIrOzBgjG+IjdH3TL8uIfvGYCTd8q95Ucw==",
   "success": true,
   "projectFilePath": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
   "expectedPackageFiles": [
@@ -86,7 +86,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.diagnostics.stacktrace\\4.3.0\\system.diagnostics.stacktrace.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.diagnostics.tracing\\4.3.0\\system.diagnostics.tracing.4.3.0.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\system.drawing.common\\4.5.0\\system.drawing.common.4.5.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.dynamic.runtime\\4.3.0\\system.dynamic.runtime.4.3.0.nupkg.sha512",
+    "C:\\Users\\frans\\.nuget\\packages\\system.dynamic.runtime\\4.3.0\\system.dynamic.runtime.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.globalization\\4.3.0\\system.globalization.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
@@ -95,7 +95,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.linq.expressions\\4.3.0\\system.linq.expressions.4.3.0.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\frans\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.objectmodel\\4.3.0\\system.objectmodel.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.reflection\\4.3.0\\system.reflection.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.reflection.emit\\4.3.0\\system.reflection.emit.4.3.0.nupkg.sha512",
@@ -127,7 +127,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\system.threading.tasks.dataflow\\5.0.0\\system.threading.tasks.dataflow.5.0.0.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.threading.tasks.parallel\\4.3.0\\system.threading.tasks.parallel.4.3.0.nupkg.sha512",
+    "C:\\Users\\frans\\.nuget\\packages\\system.threading.tasks.parallel\\4.3.0\\system.threading.tasks.parallel.4.3.0.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\umbraco.cms.core\\9.3.1\\umbraco.cms.core.9.3.1.nupkg.sha512",
     "C:\\Users\\frans\\.nuget\\packages\\umbraco.cms.infrastructure\\9.3.1\\umbraco.cms.infrastructure.9.3.1.nupkg.sha512"
   ],

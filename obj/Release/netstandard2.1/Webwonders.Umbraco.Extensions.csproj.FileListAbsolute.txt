@@ -7,3 +7,4 @@ C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\netstandar
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\netstandard2.1\Webwonders.Umbraco.Extensions.csproj.CoreCompileInputs.cache
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\netstandard2.1\Webwonders.Umbraco.Extensions.dll
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\netstandard2.1\Webwonders.Umbraco.Extensions.pdb
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\netstandard2.1\Webwonders.Umbraco.Extensions.csproj.AssemblyReference.cache
