@@ -55,10 +55,10 @@ namespace Webwonders.Services
         private readonly IUmbracoContextFactory _umbracoContextFactory;
         private readonly IPublishedValueFallback _publishedValueFallback;
         private readonly IVariationContextAccessor _variationContextAccessor;
-        private readonly UmbracoMapper _mapper;
+        private readonly IUmbracoMapper _mapper;
 
         public WWFilter(IUmbracoContextFactory umbracoContextFactory, IPublishedValueFallback publishedValueFallback,
-                               IVariationContextAccessor variationContextAccessor, UmbracoMapper mapper)
+                               IVariationContextAccessor variationContextAccessor, IUmbracoMapper mapper)
         {
             _umbracoContextFactory = umbracoContextFactory;
             _publishedValueFallback = publishedValueFallback;
