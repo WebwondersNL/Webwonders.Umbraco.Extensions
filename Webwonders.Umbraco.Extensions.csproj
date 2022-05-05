@@ -1,21 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <ContentTargetFolders>.</ContentTargetFolders>
+        <Product>Webwonders.Umbraco.Extensions</Product>
+        <PackageId>Webwonders.Umbraco.Extensions</PackageId>
+        <Title>Webwonders.Umbraco.Extensions</Title>
+        <Description>...</Description>
+        <Product>...</Product>
+        <PackageTags>umbraco plugin package</PackageTags>
+        <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Authors>Webwonders</Authors>
-    <Version>0.0.4</Version>
-    <Description>Webwonders common extensions for Umbraco</Description>
-    <PackageProjectUrl>https://github.com/WebwondersNL/Webwonders.Umbraco.Extensions</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="NPOI" Version="2.5.6" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NPOI" Version="2.5.5" />
-    <PackageReference Include="System.Runtime" Version="4.3.1" />
-    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
-    <PackageReference Include="Umbraco.Cms.Core" Version="9.3.1" />
-    <PackageReference Include="Umbraco.Cms.Infrastructure" Version="9.3.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="App_Plugins\Webwonders.Umbraco.Extensions\**\*.*">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+        <None Include="build\**\*.*">
+            <Pack>True</Pack>
+            <PackagePath>buildTransitive</PackagePath>
+        </None>
+    </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
 </Project>

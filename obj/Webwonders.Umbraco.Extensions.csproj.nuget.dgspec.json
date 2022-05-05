@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj": {
-      "version": "0.0.4",
+      "version": "1.0.0",
       "restore": {
         "projectUniqueName": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
         "projectName": "Webwonders.Umbraco.Extensions",
@@ -21,7 +21,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netstandard2.1"
+          "net5.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -30,8 +30,8 @@
           "https://nuget.outfield.digital/unstable/vendr/v3/index.json": {}
         },
         "frameworks": {
-          "netstandard2.1": {
-            "targetAlias": "netstandard2.1",
+          "net5.0": {
+            "targetAlias": "net5.0",
             "projectReferences": {}
           }
         },
@@ -42,32 +42,20 @@
         }
       },
       "frameworks": {
-        "netstandard2.1": {
-          "targetAlias": "netstandard2.1",
+        "net5.0": {
+          "targetAlias": "net5.0",
           "dependencies": {
             "NPOI": {
               "target": "Package",
-              "version": "[2.5.5, )"
+              "version": "[2.5.6, )"
             },
-            "Newtonsoft.Json": {
+            "Umbraco.Cms.Web.BackOffice": {
               "target": "Package",
-              "version": "[13.0.1, )"
+              "version": "[9.0.0, )"
             },
-            "System.Runtime": {
+            "Umbraco.Cms.Web.Website": {
               "target": "Package",
-              "version": "[4.3.1, )"
-            },
-            "System.Runtime.Caching": {
-              "target": "Package",
-              "version": "[6.0.0, )"
-            },
-            "Umbraco.Cms.Core": {
-              "target": "Package",
-              "version": "[9.3.1, )"
-            },
-            "Umbraco.Cms.Infrastructure": {
-              "target": "Package",
-              "version": "[9.3.1, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
@@ -81,7 +69,7 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "NETStandard.Library": {
+            "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },

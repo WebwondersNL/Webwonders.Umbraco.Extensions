@@ -3,21 +3,20 @@
   <metadata>
     <id>Webwonders.Umbraco.Extensions</id>
     <version>1.0.0</version>
+    <title>Webwonders.Umbraco.Extensions</title>
     <authors>Webwonders.Umbraco.Extensions</authors>
-    <description>Package Description</description>
+    <description>...</description>
+    <tags>umbraco plugin package</tags>
     <dependencies>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="NPOI" version="2.5.5" exclude="Build,Analyzers" />
-        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
-        <dependency id="System.Runtime" version="4.3.1" exclude="Build,Analyzers" />
-        <dependency id="System.Runtime.Caching" version="6.0.0" exclude="Build,Analyzers" />
-        <dependency id="UmbracoCms" version="8.17.2" exclude="Build,Analyzers" />
-        <dependency id="UmbracoCms.Core" version="8.17.2" exclude="Build,Analyzers" />
-        <dependency id="UmbracoCms.Web" version="8.17.2" exclude="Build,Analyzers" />
+      <group targetFramework="net5.0">
+        <dependency id="Umbraco.Cms.Web.BackOffice" version="9.0.0" exclude="Build,Analyzers" />
+        <dependency id="Umbraco.Cms.Web.Website" version="9.0.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\netstandard2.0\Webwonders.Umbraco.Extensions.dll" target="lib\netstandard2.0\Webwonders.Umbraco.Extensions.dll" />
+    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\net5.0\Webwonders.Umbraco.Extensions.dll" target="lib\net5.0\Webwonders.Umbraco.Extensions.dll" />
+    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\App_Plugins\Webwonders.Umbraco.Extensions\package.manifest" target=".\App_Plugins\Webwonders.Umbraco.Extensions\package.manifest" />
+    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\build\Webwonders.Umbraco.Extensions.targets" target="buildTransitive\Webwonders.Umbraco.Extensions.targets" />
   </files>
 </package>
