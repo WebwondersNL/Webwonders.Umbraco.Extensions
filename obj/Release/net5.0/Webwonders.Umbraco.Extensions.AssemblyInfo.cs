@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Webwonders.Umbraco.Extensions")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Webwonders")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyDescriptionAttribute("...")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("Extensions for Umbraco")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("9.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("9.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("...")]
+[assembly: System.Reflection.AssemblyProductAttribute("Webwonders.Umbraco.Extensions")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Webwonders.Umbraco.Extensions")]
 [assembly: System.Reflection.AssemblyVersionAttribute("9.0.0.0")]
 
