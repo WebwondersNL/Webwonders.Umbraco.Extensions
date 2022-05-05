@@ -31,7 +31,7 @@
   },
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "Webwonders.Umbraco.Extensions/1.0.0": {
+      "Webwonders.Umbraco.Extensions/9.0.0": {
         "dependencies": {
           "NPOI": "2.5.6",
           "Umbraco.Cms.Web.BackOffice": "9.0.0",
@@ -4207,7 +4207,7 @@
     }
   },
   "libraries": {
-    "Webwonders.Umbraco.Extensions/1.0.0": {
+    "Webwonders.Umbraco.Extensions/9.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -9,6 +9,7 @@
         <Product>...</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
+        <Version>9.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
