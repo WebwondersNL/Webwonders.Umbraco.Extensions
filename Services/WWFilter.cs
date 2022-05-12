@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;

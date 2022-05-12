@@ -9,11 +9,11 @@ namespace Webwonders.Services
     {
         public void Compose(IUmbracoBuilder builder)
         {
-            builder.Services.AddSingleton<IWWSearch, WWSearch>();
-            builder.Services.AddSingleton<IWWFilter, WWFilter>();
-            builder.Services.AddSingleton<IWWCacheHandling, WWCacheHandling>();
-            builder.Services.AddSingleton<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
-
+            builder.Services.AddScoped<IWWSearch, WWSearch>();
+            builder.Services.AddScoped<IWWFilter, WWFilter>();
+            builder.Services.AddScoped<IWWCacheHandling, WWCacheHandling>();
+            builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
+            builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
         }
     }
 
