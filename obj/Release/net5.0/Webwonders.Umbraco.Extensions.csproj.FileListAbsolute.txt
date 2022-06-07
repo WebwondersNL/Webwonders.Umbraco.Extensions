@@ -1,6 +1,5 @@
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\Webwonders.Umbraco.Extensions.deps.json
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\Webwonders.Umbraco.Extensions.dll
-C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\ref\Webwonders.Umbraco.Extensions.dll
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\Webwonders.Umbraco.Extensions.pdb
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\refs\Microsoft.AspNetCore.Antiforgery.dll
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net5.0\refs\Microsoft.AspNetCore.Authentication.Abstractions.dll
@@ -284,3 +283,4 @@ C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net5.0\Web
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net5.0\ref\Webwonders.Umbraco.Extensions.dll
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net5.0\Webwonders.Umbraco.Extensions.pdb
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net5.0\Webwonders.Umbraco.Extensions.csproj.AssemblyReference.cache
+C:\Users\Frans\source\repos\Webwonders.Umbraco.Extensions\obj\Release\net5.0\refint\Webwonders.Umbraco.Extensions.dll

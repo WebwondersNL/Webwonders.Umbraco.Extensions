@@ -8,10 +8,10 @@ using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Examine;
 using Umbraco.Extensions;
-using Webwonders.Models;
+using Webwonders.Extensions.Models;
 using static Umbraco.Cms.Core.Constants;
 
-namespace Webwonders.Services
+namespace Webwonders.Extensions.Services
 {
     public interface IWWSearch
     {

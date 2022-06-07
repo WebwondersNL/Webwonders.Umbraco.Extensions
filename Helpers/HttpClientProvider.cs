@@ -1,4 +1,4 @@
-﻿namespace Webwonders.Helpers
+﻿namespace Webwonders.Extensions.Helpers
 {
     /// <summary>
     /// Static HttpClientProvider. Makes sure only one Httpclient exists

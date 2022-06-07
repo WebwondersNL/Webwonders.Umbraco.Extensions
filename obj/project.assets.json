@@ -9529,23 +9529,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\frans\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Frans\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "9.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
+      "projectUniqueName": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
       "projectName": "Webwonders.Umbraco.Extensions",
-      "projectPath": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
-      "packagesPath": "C:\\Users\\frans\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\obj\\",
+      "projectPath": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
+      "packagesPath": "C:\\Users\\Frans\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\frans\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Frans\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -9553,9 +9549,9 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Users\\frans\\Source\\Local Nuget Packages": {},
         "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.outfield.digital/unstable/vendr/v3/index.json": {}
+        "https://nuget.outfield.digital/unstable/vendr/v3/index.json": {},
+        "https://www.myget.org/F/umbracoprereleases/api/v3/index.json": {}
       },
       "frameworks": {
         "net5.0": {

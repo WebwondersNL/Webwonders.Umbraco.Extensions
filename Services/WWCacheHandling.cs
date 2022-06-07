@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.Caching;
 using Newtonsoft.Json;
 
-namespace Webwonders.Services
+namespace Webwonders.Extensions.Services
 {
     public interface IWWCacheHandling
     {

@@ -5,12 +5,9 @@ using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
+using Webwonders.Extensions.Models;
 
-
-
-using Webwonders.Models;
-
-namespace Webwonders.Services
+namespace Webwonders.Extensions.Services
 {
 
     public interface IWWFilter

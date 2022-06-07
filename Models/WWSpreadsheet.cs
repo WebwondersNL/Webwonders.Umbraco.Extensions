@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Webwonders.Models
+namespace Webwonders.Extensions.Models
 {
 
     public class WWSpreadsheetAttribute : System.Attribute

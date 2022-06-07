@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Umbraco.Extensions;
-using Webwonders.Models;
+using Webwonders.Extensions.Models;
 
-namespace Webwonders.Services
+namespace Webwonders.Extensions.Services
 {
     public interface IWWSpreadsheetHandler
     {

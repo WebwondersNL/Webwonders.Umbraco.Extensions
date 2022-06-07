@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Webwonders.Models
+namespace Webwonders.Extensions.Models
 {
     [DataContract(Name = "searchResult")]
     public class WWSearchResult

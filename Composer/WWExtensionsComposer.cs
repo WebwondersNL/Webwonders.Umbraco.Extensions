@@ -2,7 +2,7 @@
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace Webwonders.Services
+namespace Webwonders.Extensions.Services
 {
 
     public class WWExtensionsComposer : IComposer
