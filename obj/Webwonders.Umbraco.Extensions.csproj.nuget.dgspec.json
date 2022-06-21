@@ -1,34 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj": {}
+    "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj": {
+    "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj": {
       "version": "9.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
+        "projectUniqueName": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
         "projectName": "Webwonders.Umbraco.Extensions",
-        "projectPath": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
-        "packagesPath": "C:\\Users\\Frans\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Frans\\source\\repos\\Webwonders.Umbraco.Extensions\\obj\\",
+        "projectPath": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
+        "packagesPath": "C:\\Users\\frans\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Frans\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\frans\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net5.0"
+          "net6.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Users\\frans\\Source\\Local Nuget Packages": {},
           "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.outfield.digital/unstable/vendr/v3/index.json": {},
-          "https://www.myget.org/F/umbracoprereleases/api/v3/index.json": {}
+          "https://nuget.outfield.digital/unstable/vendr/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0": {
-            "targetAlias": "net5.0",
+          "net6.0": {
+            "targetAlias": "net6.0",
             "projectReferences": {}
           }
         },
@@ -39,12 +42,16 @@
         }
       },
       "frameworks": {
-        "net5.0": {
-          "targetAlias": "net5.0",
+        "net6.0": {
+          "targetAlias": "net6.0",
           "dependencies": {
             "NPOI": {
               "target": "Package",
               "version": "[2.5.6, )"
+            },
+            "NPoco": {
+              "target": "Package",
+              "version": "[5.3.2, )"
             },
             "Umbraco.Cms.Web.BackOffice": {
               "target": "Package",
@@ -70,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }
