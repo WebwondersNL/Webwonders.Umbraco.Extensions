@@ -5,7 +5,7 @@ using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Webwonders.Extensions.Models;
 
-namespace Telelock.Core.Services
+namespace Webwonders.Extensions.Services
 {
 
 
