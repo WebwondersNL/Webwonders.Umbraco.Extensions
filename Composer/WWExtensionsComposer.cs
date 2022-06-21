@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Telelock.Core.Services;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -14,6 +15,7 @@ namespace Webwonders.Extensions.Services
             builder.Services.AddScoped<IWWCacheHandling, WWCacheHandling>();
             builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
             builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
+            builder.Services.AddScoped<IWWDbService, WWDbService>();
         }
     }
 
