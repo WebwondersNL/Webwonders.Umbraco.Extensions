@@ -11,7 +11,7 @@ namespace Webwonders.Extensions.Services
         {
             builder.Services.AddScoped<IWWSearch, WWSearch>();
             builder.Services.AddScoped<IWWFilter, WWFilter>();
-            builder.Services.AddScoped<IWWCacheHandling, WWCacheHandling>();
+            builder.Services.AddScoped<IWWCacheService, WWCacheService>();
             builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
             builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
             builder.Services.AddScoped<IWWDbService, WWDbService>();
