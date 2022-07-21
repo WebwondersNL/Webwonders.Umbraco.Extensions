@@ -13,6 +13,7 @@ namespace Webwonders.Extensions.Services
     public interface IWWDbService
     {
         T Select<T>(int id) where T : WWDbBase;
+        T Select<T>(int d, string sql) where T : WWDbBase;
         T Select<T>(IUmbracoDatabase db, int id) where T : WWDbBase;
         IEnumerable<T> Select<T>() where T : WWDbBase;
         IEnumerable<T> Select<T>(string sql) where T : WWDbBase;
@@ -50,13 +51,27 @@ namespace Webwonders.Extensions.Services
         /// <returns>record or null</returns>
         public T Select<T>(int id) where T : WWDbBase
         {
+            return Select<T>(id, null);
+        }
+
+
+
+        /// <summary>
+        /// Query table by id, with extra sql
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        public T Select<T>(int id, string sql) where T : WWDbBase 
+        {
             T result = null;
             if (id > 0)
             {
                 using (IScope scope = _scopeProvider.CreateScope())
                 {
                     IUmbracoDatabase db = scope.Database;
-                    string sqlString = "WHERE Deleted IS NULL AND Id = @0";
+                    string sqlString = $"WHERE Deleted IS NULL AND Id = @0 {sql}";
                     result = db.SingleOrDefault<T>(sqlString, id);
 
                     scope.Complete();
@@ -65,6 +80,7 @@ namespace Webwonders.Extensions.Services
             }
             return result;
         }
+
 
 
         /// <summary>
