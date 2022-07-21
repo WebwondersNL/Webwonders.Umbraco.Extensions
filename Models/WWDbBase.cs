@@ -13,6 +13,17 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 namespace Webwonders.Extensions.Models
 {
 
+    #region DatabaseConstants
+
+    // used to avoid nested transactions, which NPOCO allows, but SQL lite does not
+    public enum TransactionState 
+    { 
+        Unspecified = 0,
+        NewTransaction = 1,
+        ExistingTransaction = 2,
+    }
+
+    #endregion DatabaseConstants
 
 
     #region DatabaseTables
