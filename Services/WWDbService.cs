@@ -123,7 +123,7 @@ namespace Webwonders.Extensions.Services
         /// <returns>all non-deleted records that pass sql filter or null</returns>
         public IEnumerable<T> Select<T>(string sql) where T : WWDbBase
         {
-            IEnumerable<T> result = null;
+            IEnumerable<T> result = Enumerable.Empty<T>();
             using (IScope scope = _scopeProvider.CreateScope())
             {
                 IUmbracoDatabase db = scope.Database;
@@ -147,7 +147,7 @@ namespace Webwonders.Extensions.Services
         /// <returns>all non-deleted records that pass sql filter or null</returns>
         public IEnumerable<T> Select<T>(IUmbracoDatabase db, string sql) where T : WWDbBase
         {
-            IEnumerable<T> result = null;
+            IEnumerable<T> result = Enumerable.Empty<T>();
 
             if (db != null)
             {
