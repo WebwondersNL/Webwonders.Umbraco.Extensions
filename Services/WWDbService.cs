@@ -220,7 +220,17 @@ namespace Webwonders.Extensions.Services
                 {
                     IUmbracoDatabase db = scope.Database;
 
+                    // Save current Created value
+                    T current = Select<T>(value.Id);
+                    if (current != null)
+                    {
+                        value.Created = current.Created;
+                    }
+
+                    // Adjust Modified value
                     value.Modified = DateTime.Now;
+
+                    // Update new values
                     db.Update(value);
 
                     scope.Complete();
@@ -244,7 +254,17 @@ namespace Webwonders.Extensions.Services
             if (db != null && value != null)
             {
 
+                // Save current Created value
+                T current = Select<T>(db, value.Id);
+                if (current != null)
+                {
+                    value.Created = current.Created;
+                }
+
+                // Adust Modified value
                 value.Modified = DateTime.Now;
+
+                // Update new values
                 db.Update(value);
 
             }

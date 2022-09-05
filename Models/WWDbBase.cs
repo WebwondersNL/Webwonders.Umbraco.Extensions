@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 
@@ -29,6 +30,9 @@ namespace Webwonders.Extensions.Models
     #region DatabaseTables
     public class WWDbBase
     {
+        [PrimaryKeyColumn(AutoIncrement =true)]
+        public int Id { get; set; }
+
         //[DateTime2]
         public DateTime Created { get; set; }
         //[DateTime2]
@@ -46,6 +50,7 @@ namespace Webwonders.Extensions.Models
     #region DatabaseColumns
     public class WWDbBaseColumns
     {
+        public const string Id = "Id";
         public const string Created = "Created";
         public const string Modified = "Modified";
         public const string Deleted = "Deleted";
@@ -55,6 +60,8 @@ namespace Webwonders.Extensions.Models
     #region ViewTables
     public class VwDbBase
     {
+        [DataMember(Name ="id")]
+        public int Id { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
         public DateTime? Deleted { get; set; }
