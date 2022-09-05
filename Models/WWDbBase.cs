@@ -57,14 +57,15 @@ namespace Webwonders.Extensions.Models
     }
     #endregion DatabaseColumns
 
-    #region ViewTables
-    public class VwDbBase
-    {
-        [DataMember(Name ="id")]
-        public int Id { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime Modified { get; set; }
-        public DateTime? Deleted { get; set; }
-    }
-    #endregion ViewTables
+    // removed: inheriting in viewmodels can give problems in binding
+    //#region ViewTables
+    //public class VwDbBase
+    //{
+    //    [DataMember(Name ="id")]
+    //    public int Id { get; set; }
+    //    public DateTime Created { get; set; }
+    //    public DateTime Modified { get; set; }
+    //    public DateTime? Deleted { get; set; }
+    //}
+    //#endregion ViewTables
 }
