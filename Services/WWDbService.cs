@@ -177,6 +177,7 @@ namespace Webwonders.Extensions.Services
                     IUmbracoDatabase db = scope.Database;
 
                     value.Created = DateTime.Now;
+                    value.Modified = DateTime.Now;
                     db.Insert<T>(value); // value gets populated back
 
                     scope.Complete();
@@ -199,6 +200,7 @@ namespace Webwonders.Extensions.Services
             if (db != null && value != null)
             {
                 value.Created = DateTime.Now;
+                value.Modified = DateTime.Now;
                 db.Insert<T>(value);
             }
 
@@ -289,7 +291,7 @@ namespace Webwonders.Extensions.Services
                     IUmbracoDatabase db = scope.Database;
 
                     value.Deleted = DateTime.Now;
-                    db.Delete<T>(value);
+                    db.Update(value);
 
                     scope.Complete();
                 }
@@ -309,7 +311,7 @@ namespace Webwonders.Extensions.Services
             if (db != null && value != null)
             {
                 value.Deleted = DateTime.Now;
-                db.Delete<T>(value);
+                db.Update(value);
             }
         }
 
