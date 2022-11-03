@@ -12,18 +12,31 @@ namespace Webwonders.Extensions.Services
 
     public interface IWWDbService
     {
+        // Select Single
         T Select<T>(int id) where T : WWDbBase;
-        T Select<T>(int d, string sql) where T : WWDbBase;
+        T Select<T>(int id, string sql) where T : WWDbBase;
         T Select<T>(IUmbracoDatabase db, int id) where T : WWDbBase;
+        T Select<T>(IUmbracoDatabase db, int id, string sql) where T: WWDbBase;
+
+        // Select multiple
         IEnumerable<T> Select<T>() where T : WWDbBase;
         IEnumerable<T> Select<T>(string sql) where T : WWDbBase;
+        IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase;   
         IEnumerable<T> Select<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
+
+        // Insert
         T Insert<T>(T value) where T : WWDbBase;
         T Insert<T>(IUmbracoDatabase db, T value) where T : WWDbBase;
+
+        // Update
         T Update<T>(T value) where T : WWDbBase;
         T Update<T>(IUmbracoDatabase db, T value) where T : WWDbBase;
+
+        // Delete
         void Delete<T>(T value) where T : WWDbBase;
         void Delete<T>(IUmbracoDatabase db, T value) where T : WWDbBase;
+
+        // Transactions
         int BeginTransaction(IUmbracoDatabase db);
         void CompleteTransaction(IUmbracoDatabase db);
         void CompleteTransaction(IUmbracoDatabase db, int transactionState);
@@ -51,7 +64,7 @@ namespace Webwonders.Extensions.Services
         /// <returns>record or null</returns>
         public T Select<T>(int id) where T : WWDbBase
         {
-            return Select<T>(id, null);
+            return Select<T>(id, "");
         }
 
 
@@ -71,16 +84,13 @@ namespace Webwonders.Extensions.Services
                 using (IScope scope = _scopeProvider.CreateScope())
                 {
                     IUmbracoDatabase db = scope.Database;
-                    string sqlString = $"WHERE Deleted IS NULL AND Id = @0 {sql}";
-                    result = db.SingleOrDefault<T>(sqlString, id);
-
+                    result = Select<T>(db, id, sql);
                     scope.Complete();
                 }
 
             }
             return result;
         }
-
 
 
         /// <summary>
@@ -92,10 +102,24 @@ namespace Webwonders.Extensions.Services
         /// <returns>record or null</returns>
         public T Select<T>(IUmbracoDatabase db, int id) where T : WWDbBase
         {
+            return Select<T>(db, id, "");
+        }
+
+
+
+        /// <summary>
+        /// Query table by id within an existing scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db">database of scope</param>
+        /// <param name="id">id to find</param>
+        /// <returns>record or null</returns>
+        public T Select<T>(IUmbracoDatabase db, int id, string sql) where T : WWDbBase
+        {
             T result = null;
             if (db != null && id > 0)
             {
-                string sqlString = "WHERE Deleted IS NULL AND Id = @0";
+                string sqlString = $"WHERE Deleted IS NULL AND Id = @0 {sql}";
                 result = db.SingleOrDefault<T>(sqlString, id);
             }
             return result;
@@ -127,12 +151,24 @@ namespace Webwonders.Extensions.Services
             using (IScope scope = _scopeProvider.CreateScope())
             {
                 IUmbracoDatabase db = scope.Database;
-                string sqlString = $"WHERE Deleted IS NULL {sql}";
-                result = db.Query<T>(sqlString); // Query filters on database, fetch on client. Use Query
-
+                result = Select<T>(db, sql);
                 scope.Complete();
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// Query table for all records that are not deleted and pass optional sql
+        /// within an existing scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db">database of scope</param>
+        /// <param name="sql">optional sql filter, start with AND or OR</param>
+        /// <returns>all non-deleted records that pass sql filter or null</returns>
+        public IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase
+        {
+            return Select<T>(db, "");
         }
 
 
@@ -175,11 +211,7 @@ namespace Webwonders.Extensions.Services
                 using (IScope scope = _scopeProvider.CreateScope())
                 {
                     IUmbracoDatabase db = scope.Database;
-
-                    value.Created = DateTime.Now;
-                    value.Modified = DateTime.Now;
-                    db.Insert<T>(value); // value gets populated back
-
+                    value = Insert<T>(db, value);
                     scope.Complete();
                 }
             }
@@ -201,7 +233,7 @@ namespace Webwonders.Extensions.Services
             {
                 value.Created = DateTime.Now;
                 value.Modified = DateTime.Now;
-                db.Insert<T>(value);
+                db.Insert<T>(value); // value gets populated back
             }
 
             return value;
@@ -221,20 +253,7 @@ namespace Webwonders.Extensions.Services
                 using (IScope scope = _scopeProvider.CreateScope())
                 {
                     IUmbracoDatabase db = scope.Database;
-
-                    // Save current Created value
-                    T current = Select<T>(value.Id);
-                    if (current != null)
-                    {
-                        value.Created = current.Created;
-                    }
-
-                    // Adjust Modified value
-                    value.Modified = DateTime.Now;
-
-                    // Update new values
-                    db.Update(value);
-
+                    value = Update<T>(db, value);
                     scope.Complete();
                 }
             }
@@ -289,10 +308,7 @@ namespace Webwonders.Extensions.Services
                 using (IScope scope = _scopeProvider.CreateScope())
                 {
                     IUmbracoDatabase db = scope.Database;
-
-                    value.Deleted = DateTime.Now;
-                    db.Update(value);
-
+                    Delete<T>(db, value);
                     scope.Complete();
                 }
             }
@@ -316,6 +332,7 @@ namespace Webwonders.Extensions.Services
         }
 
 
+        // TODO Check in SQLite
         public int BeginTransaction(IUmbracoDatabase db)
         {
             int result = (int)TransactionState.Unspecified;
