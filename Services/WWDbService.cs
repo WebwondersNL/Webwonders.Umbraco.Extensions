@@ -24,6 +24,12 @@ namespace Webwonders.Extensions.Services
         IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase;   
         IEnumerable<T> Select<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
 
+        // Select Deleted
+        IEnumerable<T> SelectDeleted<T>() where T : WWDbBase;
+        IEnumerable<T> SelectDeleted<T>(string sql) where T : WWDbBase;
+        IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db) where T : WWDbBase;
+        IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
+
         // Insert
         T Insert<T>(T value) where T : WWDbBase;
         T Insert<T>(IUmbracoDatabase db, T value) where T : WWDbBase;
@@ -36,12 +42,14 @@ namespace Webwonders.Extensions.Services
         void Delete<T>(T value) where T : WWDbBase;
         void Delete<T>(IUmbracoDatabase db, T value) where T : WWDbBase;
 
-        // Transactions
-        int BeginTransaction(IUmbracoDatabase db);
-        void CompleteTransaction(IUmbracoDatabase db);
-        void CompleteTransaction(IUmbracoDatabase db, int transactionState);
-        void AbortTransaction(IUmbracoDatabase db);
-        void AbortTransaction(IUmbracoDatabase db, int transactionState);
+        // Removed: transactions need the GetTransaction method on db
+        // These methods do not work in Umbraco
+        //// Transactions 
+        //int BeginTransaction(IUmbracoDatabase db);
+        //void CompleteTransaction(IUmbracoDatabase db);
+        //void CompleteTransaction(IUmbracoDatabase db, int transactionState);
+        //void AbortTransaction(IUmbracoDatabase db);
+        //void AbortTransaction(IUmbracoDatabase db, int transactionState);
     }
 
 
@@ -196,7 +204,75 @@ namespace Webwonders.Extensions.Services
         }
 
 
+        /// <summary>
+        /// Query table for all records THAT ARE DELETED
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>all non-deleted records or null</returns>
+        public IEnumerable<T> SelectDeleted<T>() where T : WWDbBase
+        {
+            return SelectDeleted<T>("");
+        }
 
+
+
+        /// <summary>
+        /// Query table for all records THAT ARE DELETED and pass optional sql
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sql">optional sql filter, start with AND or OR</param>
+        /// <returns>all non-deleted records that pass sql filter or null</returns>
+        public IEnumerable<T> SelectDeleted<T>(string sql) where T : WWDbBase
+        {
+            IEnumerable<T> result = Enumerable.Empty<T>();
+            using (IScope scope = _scopeProvider.CreateScope())
+            {
+                IUmbracoDatabase db = scope.Database;
+                result = SelectDeleted<T>(db, sql);
+                scope.Complete();
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// Query table for all records THAT ARE DELETED and pass optional sql
+        /// within an existing scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db">database of scope</param>
+        /// <param name="sql">optional sql filter, start with AND or OR</param>
+        /// <returns>all non-deleted records that pass sql filter or null</returns>
+        public IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db) where T : WWDbBase
+        {
+            return SelectDeleted<T>(db, "");
+        }
+
+
+
+        /// <summary>
+        /// Query table for all records THAT ARE DELETED and pass optional sql
+        /// within an existing scope
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="db">database of scope</param>
+        /// <param name="sql">optional sql filter, start with AND or OR</param>
+        /// <returns>all non-deleted records that pass sql filter or null</returns>
+        public IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db, string sql) where T : WWDbBase
+        {
+            IEnumerable<T> result = Enumerable.Empty<T>();
+
+            if (db != null)
+            {
+                string sqlString = $"WHERE Deleted IS NOT NULL {sql}";
+                result = db.Query<T>(sqlString); // Query filters on database, fetch on client. Use Query
+            }
+
+            return result;
+
+        }
+
+        
 
         /// <summary>
         /// Insert a record
@@ -332,61 +408,61 @@ namespace Webwonders.Extensions.Services
         }
 
 
-        // TODO Check in SQLite
-        public int BeginTransaction(IUmbracoDatabase db)
-        {
-            int result = (int)TransactionState.Unspecified;
+        //// TODO Check in SQLite
+        //public int BeginTransaction(IUmbracoDatabase db)
+        //{
+        //    int result = (int)TransactionState.Unspecified;
 
-            if (db != null)
-            {
-                if (db.InTransaction)
-                {
-                    result = (int)TransactionState.ExistingTransaction;
-                }
-                else
-                {
-                    result = (int)TransactionState.NewTransaction;
-                    db.BeginTransaction();
-                }
-            }
-            return result;
-        }
-
-
-        public void CompleteTransaction(IUmbracoDatabase db)
-        {
-            if (db != null)
-            {
-                db.CompleteTransaction();
-            }
-        }
+        //    if (db != null)
+        //    {
+        //        if (db.InTransaction)
+        //        {
+        //            result = (int)TransactionState.ExistingTransaction;
+        //        }
+        //        else
+        //        {
+        //            result = (int)TransactionState.NewTransaction;
+        //            db.BeginTransaction();
+        //        }
+        //    }
+        //    return result;
+        //}
 
 
-        public void CompleteTransaction(IUmbracoDatabase db, int transactionState)
-        {
-            if (transactionState == (int)TransactionState.NewTransaction && db != null)
-            {
-                db.CompleteTransaction();
-            }
-        }
+        //public void CompleteTransaction(IUmbracoDatabase db)
+        //{
+        //    if (db != null)
+        //    {
+        //        db.CompleteTransaction();
+        //    }
+        //}
 
 
-        public void AbortTransaction(IUmbracoDatabase db)
-        {
-            if (db != null)
-            {
-                db.AbortTransaction();
-            }
-        }
+        //public void CompleteTransaction(IUmbracoDatabase db, int transactionState)
+        //{
+        //    if (transactionState == (int)TransactionState.NewTransaction && db != null)
+        //    {
+        //        db.CompleteTransaction();
+        //    }
+        //}
 
 
-        public void AbortTransaction(IUmbracoDatabase db, int transactionState)
-        {
-            if (transactionState == (int)TransactionState.NewTransaction && db != null)
-            {
-                db.AbortTransaction();
-            }
-        }
+        //public void AbortTransaction(IUmbracoDatabase db)
+        //{
+        //    if (db != null)
+        //    {
+        //        db.AbortTransaction();
+        //    }
+        //}
+
+
+        //public void AbortTransaction(IUmbracoDatabase db, int transactionState)
+        //{
+        //    if (transactionState == (int)TransactionState.NewTransaction && db != null)
+        //    {
+        //        db.AbortTransaction();
+        //    }
+        //}
 
 
     }
