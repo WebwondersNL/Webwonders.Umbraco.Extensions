@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Superpower.Model;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Webwonders.Extensions.Models;
@@ -16,15 +15,16 @@ namespace Webwonders.Extensions.Services
         T Select<T>(int id) where T : WWDbBase;
         T Select<T>(int id, string sql) where T : WWDbBase;
         T Select<T>(IUmbracoDatabase db, int id) where T : WWDbBase;
-        T Select<T>(IUmbracoDatabase db, int id, string sql) where T: WWDbBase;
+        T Select<T>(IUmbracoDatabase db, int id, string sql) where T : WWDbBase;
 
         // Select multiple
         IEnumerable<T> Select<T>() where T : WWDbBase;
         IEnumerable<T> Select<T>(string sql) where T : WWDbBase;
-        IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase;   
+        IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase;
         IEnumerable<T> Select<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
 
         // Select Deleted
+        T SelectDeleted<T>(int id) where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>() where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>(string sql) where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db) where T : WWDbBase;
@@ -84,7 +84,7 @@ namespace Webwonders.Extensions.Services
         /// <param name="id"></param>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public T Select<T>(int id, string sql) where T : WWDbBase 
+        public T Select<T>(int id, string sql) where T : WWDbBase
         {
             T result = null;
             if (id > 0)
@@ -205,6 +205,26 @@ namespace Webwonders.Extensions.Services
 
 
         /// <summary>
+        /// Query table for record THAT IS DELETED by id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public T SelectDeleted<T>(int id) where T : WWDbBase
+        {
+            T result = null;
+            using (IScope scope = _scopeProvider.CreateScope())
+            {
+                IUmbracoDatabase db = scope.Database;
+                string sqlString = $"WHERE Deleted IS NOT NULL AND Id = {id} ";
+                result = db.SingleOrDefault<T>(sqlString, id);
+                scope.Complete();
+            }
+            return result;
+        }
+
+
+        /// <summary>
         /// Query table for all records THAT ARE DELETED
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -272,7 +292,7 @@ namespace Webwonders.Extensions.Services
 
         }
 
-        
+
 
         /// <summary>
         /// Insert a record
