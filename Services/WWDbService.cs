@@ -27,6 +27,7 @@ namespace Webwonders.Extensions.Services
         T SelectDeleted<T>(int id) where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>() where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>(string sql) where T : WWDbBase;
+        T SelectDeleted<T>(IUmbracoDatabase db, int id) where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db) where T : WWDbBase;
         IEnumerable<T> SelectDeleted<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
 
@@ -253,6 +254,26 @@ namespace Webwonders.Extensions.Services
             }
             return result;
         }
+
+
+
+        /// <summary>
+        /// Query table for record THAT IS DELETED by id
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public T SelectDeleted<T>(IUmbracoDatabase db, int id) where T : WWDbBase
+        {
+            T result = null;
+            if (db != null)
+            {
+                string sqlString = $"WHERE Deleted IS NOT NULL AND Id = {id} ";
+                result = db.SingleOrDefault<T>(sqlString, id);
+            }
+            return result;
+        }
+
 
 
         /// <summary>
