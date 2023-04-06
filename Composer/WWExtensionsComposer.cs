@@ -15,6 +15,7 @@ namespace Webwonders.Extensions.Services
             builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
             builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
             builder.Services.AddScoped<IWWDbService, WWDbService>();
+            builder.Services.AddScoped<IWWLanguage, WWLanguage>();
         }
     }
 
