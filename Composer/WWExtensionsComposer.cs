@@ -2,21 +2,19 @@
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
-namespace Webwonders.Extensions.Services
+namespace Webwonders.Extensions;
+
+
+public class WWExtensionsComposer : IComposer
 {
-
-    public class WWExtensionsComposer : IComposer
+    public void Compose(IUmbracoBuilder builder)
     {
-        public void Compose(IUmbracoBuilder builder)
-        {
-            builder.Services.AddScoped<IWWSearch, WWSearch>();
-            builder.Services.AddScoped<IWWFilter, WWFilter>();
-            builder.Services.AddScoped<IWWCacheService, WWCacheService>();
-            builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
-            builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
-            builder.Services.AddScoped<IWWDbService, WWDbService>();
-            builder.Services.AddScoped<IWWLanguage, WWLanguage>();
-        }
+        builder.Services.AddScoped<IWWSearch, WWSearch>();
+        builder.Services.AddScoped<IWWFilter, WWFilter>();
+        builder.Services.AddScoped<IWWCacheService, WWCacheService>();
+        builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
+        builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
+        builder.Services.AddScoped<IWWDbService, WWDbService>();
+        builder.Services.AddScoped<IWWLanguage, WWLanguage>();
     }
-
 }

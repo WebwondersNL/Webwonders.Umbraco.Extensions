@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 
@@ -11,61 +10,60 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 
 
-namespace Webwonders.Extensions.Models
+namespace Webwonders.Extensions;
+
+
+#region DatabaseConstants
+
+//// used to avoid nested transactions, which NPOCO allows, but SQL lite does not
+//public enum TransactionState 
+//{ 
+//    Unspecified = 0,
+//    NewTransaction = 1,
+//    ExistingTransaction = 2,
+//}
+
+#endregion DatabaseConstants
+
+
+#region DatabaseTables
+public class WWDbBase
 {
+    [PrimaryKeyColumn(AutoIncrement = true)]
+    public int Id { get; set; }
 
-    #region DatabaseConstants
+    //[DateTime2]
+    public DateTime Created { get; set; }
+    //[DateTime2]
+    public DateTime Modified { get; set; }
 
-    //// used to avoid nested transactions, which NPOCO allows, but SQL lite does not
-    //public enum TransactionState 
-    //{ 
-    //    Unspecified = 0,
-    //    NewTransaction = 1,
-    //    ExistingTransaction = 2,
-    //}
+    //[DateTime2]
+    [Index(IndexTypes.NonClustered)]
+    [NullSetting(NullSetting = NullSettings.Null)]
+    public DateTime? Deleted { get; set; }
 
-    #endregion DatabaseConstants
-
-
-    #region DatabaseTables
-    public class WWDbBase
-    {
-        [PrimaryKeyColumn(AutoIncrement =true)]
-        public int Id { get; set; }
-
-        //[DateTime2]
-        public DateTime Created { get; set; }
-        //[DateTime2]
-        public DateTime Modified { get; set; }
-
-        //[DateTime2]
-        [Index(IndexTypes.NonClustered)]
-        [NullSetting(NullSetting = NullSettings.Null)]
-        public DateTime? Deleted { get; set; }
-
-    }
-    #endregion DatabaseTables
-
-
-    #region DatabaseColumns
-    public class WWDbBaseColumns
-    {
-        public const string Id = "Id";
-        public const string Created = "Created";
-        public const string Modified = "Modified";
-        public const string Deleted = "Deleted";
-    }
-    #endregion DatabaseColumns
-
-    // removed: inheriting in viewmodels can give problems in binding
-    //#region ViewTables
-    //public class VwDbBase
-    //{
-    //    [DataMember(Name ="id")]
-    //    public int Id { get; set; }
-    //    public DateTime Created { get; set; }
-    //    public DateTime Modified { get; set; }
-    //    public DateTime? Deleted { get; set; }
-    //}
-    //#endregion ViewTables
 }
+#endregion DatabaseTables
+
+
+#region DatabaseColumns
+public class WWDbBaseColumns
+{
+    public const string Id = "Id";
+    public const string Created = "Created";
+    public const string Modified = "Modified";
+    public const string Deleted = "Deleted";
+}
+#endregion DatabaseColumns
+
+// removed: inheriting in viewmodels can give problems in binding
+//#region ViewTables
+//public class VwDbBase
+//{
+//    [DataMember(Name ="id")]
+//    public int Id { get; set; }
+//    public DateTime Created { get; set; }
+//    public DateTime Modified { get; set; }
+//    public DateTime? Deleted { get; set; }
+//}
+//#endregion ViewTables

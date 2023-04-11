@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbraco.Cms.Core.Services;
 
-namespace Webwonders.Extensions.Services;
+namespace Webwonders.Extensions;
 
-public interface IWWLanguage {
+public interface IWWLanguage
+{
     public string GetDictionaryItem(string key, string? culture);
 }
 
 
-public class WWLanguage : IWWLanguage {
+public class WWLanguage : IWWLanguage
+{
 
     private readonly ILocalizationService _localizationService;
 
