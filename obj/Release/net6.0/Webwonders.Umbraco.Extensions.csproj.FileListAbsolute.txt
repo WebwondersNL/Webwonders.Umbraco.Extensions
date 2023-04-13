@@ -298,3 +298,5 @@ C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net6.0\Web
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net6.0\refint\Webwonders.Umbraco.Extensions.dll
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net6.0\Webwonders.Umbraco.Extensions.pdb
 C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\obj\Release\net6.0\ref\Webwonders.Umbraco.Extensions.dll
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net6.0\runtimes\win-x64\native\wkhtmltox.dll
+C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Release\net6.0\runtimes\win-x86\native\wkhtmltox.dll
