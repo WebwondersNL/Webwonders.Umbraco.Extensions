@@ -15,6 +15,7 @@ public class WWExtensionsComposer : IComposer
         builder.Services.AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>();
         builder.Services.AddScoped<IWWApiCallService, WWApiCallService>();
         builder.Services.AddScoped<IWWDbService, WWDbService>();
+        builder.Services.AddScoped<IWWHtmlToPdfService, WWHtmlToPdfService>();
         builder.Services.AddScoped<IWWLanguage, WWLanguage>();
     }
 }
