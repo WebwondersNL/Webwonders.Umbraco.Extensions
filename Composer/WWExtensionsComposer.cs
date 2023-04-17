@@ -20,6 +20,6 @@ public class WWExtensionsComposer : IComposer
             .AddScoped<IWWDbService, WWDbService>()
             .AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()))
             .AddScoped<IWWHtmlToPdfService, WWHtmlToPdfService>()
-            .AddScoped<IWWLanguage, WWLanguage>()
+            .AddScoped<IWWLanguage, WWLanguage>();
     }
 }
