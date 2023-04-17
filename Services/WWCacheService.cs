@@ -14,8 +14,12 @@ public interface IWWCacheService
     T GetCacheItem<T>(string key, Func<T> getCacheItem, Func<T, bool> isValidCache, TimeSpan? timeout = null, bool isSliding = false, string[] dependentFiles = null) where T : class;
     T GetCacheItem<T>(string key, string jsonFileToCache, Func<T, bool> isValidCache, TimeSpan? timeout = null, bool isSliding = false, string[] dependentFiles = null) where T : class;
 
+    void ClearCacheItem(string key);
+
+    void InsertCacheItem<T>(string key, T value, TimeSpan? timeout = null, bool isSliding = false);
     void InsertCacheItem<T>(string key, Func<T> getCacheItem, TimeSpan? timeout = null, bool isSliding = false, string[] dependentFiles = null);
     void InsertCacheItem<T>(string key, string jsonFileToCache, TimeSpan? timeout = null, bool isSliding = false, string[] dependentFiles = null) where T : class;
+
 }
 
 public class WWCacheService : IWWCacheService
@@ -99,6 +103,32 @@ public class WWCacheService : IWWCacheService
     }
 
 
+    public void ClearCacheItem(string key)
+    {
+        if (_runtimeCache.SearchByKey(key) != null)
+        {
+            _runtimeCache.ClearByKey(key);
+        }
+    }
+
+
+    /// <summary>
+    /// Sets cache item
+    /// </summary>
+    /// <typeparam name="T">typeof cached variable</typeparam>
+    /// <param name="key">key in cache</param>
+    /// <param name="value">object to cache</param>
+    /// <param name="timeout">timeout of cache</param>
+    /// <param name="isSliding">is cache sliding or absolute</param>
+    public void InsertCacheItem<T>(string key, T value, TimeSpan? timeout = null, bool isSliding = false)
+    {
+        if (!String.IsNullOrWhiteSpace(key) && value != null)
+        {
+            _runtimeCache.InsertCacheItem<T>(key, () => { return value; }, timeout, isSliding);
+        }
+    }
+
+
     /// <summary>
     /// Sets cache item without retrieving it
     /// </summary>
@@ -154,6 +184,7 @@ public class WWCacheService : IWWCacheService
         }
         return null;
     }
+
 
 
     ///// <summary>

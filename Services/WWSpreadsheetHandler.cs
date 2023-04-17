@@ -215,11 +215,11 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                                 if (StopOnError)
                                                 {
                                                     result = null; // discard reading up to now.
-                                                    throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i}. Stopped reading");
+                                                    throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i+1}. Stopped reading");
                                                 }
                                                 else
                                                 {
-                                                    _logger.LogError($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i}. Row is skipped.");
+                                                    _logger.LogError($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i+1}. Row is skipped.");
                                                 }
                                             }
                                             else
