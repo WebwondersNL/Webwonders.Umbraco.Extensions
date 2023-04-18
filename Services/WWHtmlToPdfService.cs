@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Text;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using RazorLight;
@@ -11,7 +12,7 @@ namespace Webwonders.Extensions;
 
 public interface IWWHtmlToPdfService
 {
-    (bool success, MemoryStream? stream) GetPdfMemoryStream(string pdfType, string viewName, object viewModel, WWHtmlToPdfSettings? settings = null);
+    (bool success, MemoryStream? stream) GetPdfMemoryStream(string pdfType, object viewModel, WWHtmlToPdfSettings? settings = null);
 
 }
 
@@ -23,6 +24,12 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
     private readonly IConverter _converter;
     private readonly IUmbracoContextAccessor _umbracoContextAccessor;
     private readonly IWWCacheService _cacheService;
+
+
+    private const string BodyHtml = "Body.cshtml";
+    private const string HeaderHtml = "Header.cshtml";
+    private const string FooterHtml = "Footer.cshtml";
+
 
 
     public WWHtmlToPdfService(IWebHostEnvironment webHostEnvironment,
@@ -41,10 +48,12 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
 
     /// <summary>
     /// Get the pdf as memorystream
-    /// This expects a PdfType which is also the folder in the Views/Pdf where the views need to be located.
-    /// The main view has to be passed as parameter. It is possible to include a header and footer view. When none are given, the default header and footer will be used.
-    /// These are called Header.cshtml and Footer.cshtml and are located in the Views/Pdf folder. The given viewmodel is passed to the view and the header and footer.
-    /// A custom header and footer can be given by passing the urls in the settings, the viewmodel will be passed there as well.
+    /// This expects a PdfType which is also the folder in the Views/Pdf where the views need to be located. For instance: Views/Pdf/Invoice
+    /// It expects a viewmodel which is passed to the view and when asked for to the header and footer.
+    /// In the pdfType folder three views can be located: Body.cshtml, Header.cshtml and Footer.cshtml
+    /// Body.cshtml is the main view and required. 
+    /// It is possible to pass a custom header and footer in the settings. When none are given, the default header and footer will be used.
+    /// The given viewmodel is passes to all three views.
     /// There are booleans to indicate no header and/or footer should be used.
     /// </summary>
     /// <param name="pdfType">Type of the pdf (subfolder of views/pdf that will be searched)</param>
@@ -53,19 +62,39 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
     /// <param name="settings">Settings of pdf</param>
     /// <returns>bool success </returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public (bool success, MemoryStream? stream) GetPdfMemoryStream(string pdfType, string viewName, object viewModel, WWHtmlToPdfSettings? settings = null)
+    public (bool success, MemoryStream? stream) GetPdfMemoryStream(string pdfType, object viewModel, WWHtmlToPdfSettings? settings = null)
     {
+
         if (String.IsNullOrWhiteSpace(pdfType))
         {
             throw new ArgumentNullException(nameof(pdfType));
         }
-        if (String.IsNullOrWhiteSpace(viewName))
+        if (viewModel == null)
         {
-            throw new ArgumentNullException(nameof(viewName));
+            throw new ArgumentNullException(nameof(viewModel));
         }
 
-        settings ??= new WWHtmlToPdfSettings(); // when settings null: all defaultvalues
+        
+        // when settings is null: use all defaultvalues
+        settings ??= new WWHtmlToPdfSettings(); 
 
+
+        // check for existance of views
+        string contentRootPath = _webHostEnvironment.ContentRootPath;
+        string pdfPath = Path.Combine(contentRootPath, $"Views\\pdf\\{pdfType}\\");
+
+        if (!File.Exists($"{pdfPath}{BodyHtml}"))
+        {
+            throw new FileNotFoundException($"View not found: {pdfPath}{BodyHtml}");
+        }
+        if (settings.UseHeaderHtml && String.IsNullOrWhiteSpace(settings.HeaderHtmlUrl) && !File.Exists($"{pdfPath}{HeaderHtml}"))
+        {
+            throw new FileNotFoundException($"View not found: {pdfPath}{HeaderHtml}");
+        }
+        if (settings.UseFooterHtml && String.IsNullOrWhiteSpace(settings.FooterHtmlUrl) && !File.Exists($"{pdfPath}{FooterHtml}"))
+        {
+            throw new FileNotFoundException($"View not found: {pdfPath}{FooterHtml}");
+        }
 
         if (_umbracoContextAccessor.TryGetUmbracoContext(out IUmbracoContext? context) && context != null)
         {
@@ -82,8 +111,6 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
             }
         }
 
-        string contentRootPath = _webHostEnvironment.ContentRootPath;
-        string pdfPath = Path.Combine(contentRootPath, $"Views\\pdf\\{pdfType}\\");
 
 
         var engine = new RazorLightEngineBuilder()
@@ -91,7 +118,7 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
                          .UseMemoryCachingProvider()
                          .Build();
 
-        string htmlString = engine.CompileRenderAsync(viewName, viewModel).Result;
+        string htmlString = engine.CompileRenderAsync(BodyHtml, viewModel).Result;
 
         if (!String.IsNullOrWhiteSpace(htmlString))
         {
