@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Webwonders.Umbraco.Extensions;
 using WkHtmlToPdfDotNet;
 using WkHtmlToPdfDotNet.Contracts;
 
@@ -22,6 +23,7 @@ public class WWExtensionsComposer : IComposer
             .AddScoped<IWWApiCallService, WWApiCallService>()
             .AddScoped<IWWDbService, WWDbService>()
             .AddScoped<IWWHtmlToPdfService, WWHtmlToPdfService>()
-            .AddScoped<IWWLanguage, WWLanguage>();
+            .AddScoped<IWWLanguage, WWLanguage>()
+            .AddScoped<IWWRequestService, WWRequestService>();
     }
 }
