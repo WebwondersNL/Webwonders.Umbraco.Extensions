@@ -2,13 +2,14 @@
 
 namespace Webwonders.Extensions;
 
-
+[System.AttributeUsage(System.AttributeTargets.Class)]
 public class WWSpreadsheetAttribute : System.Attribute
 {
     public bool EmptyCellsAllowed { get; set; }
     public int RepeatedFromColumn { get; set; } // From this column the data gets repeated until there is no mora data. Columns start at base 0
 }
 
+[System.AttributeUsage(System.AttributeTargets.Property)]
 public class WWSpreadsheetColumnAttribute : System.Attribute
 {
     public string ColumnName { get; set; }

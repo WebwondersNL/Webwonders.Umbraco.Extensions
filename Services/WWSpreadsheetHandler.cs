@@ -55,11 +55,11 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
     {
         WWSpreadSheet result = null;
 
-        FileInfo spreadsheetFile = new FileInfo(SpreadsheetFile);
+        var spreadsheetFile = new FileInfo(SpreadsheetFile);
         if (spreadsheetFile != null && spreadsheetFile.Exists)
         {
             // First: get the definition of the spreadsheet and its rows
-            ObjectSpreadsheetDefinition spreadsheetDefinition = new ObjectSpreadsheetDefinition();
+            var spreadsheetDefinition = new ObjectSpreadsheetDefinition();
             if (typeof(T).GetCustomAttribute<WWSpreadsheetAttribute>() is WWSpreadsheetAttribute spreadsheetAttribute)
             {
                 spreadsheetDefinition.EmptyCellsAllowed = spreadsheetAttribute.EmptyCellsAllowed;
@@ -131,17 +131,17 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                     }
 
                     // TODO empty rows
-                    // Iterate rows
-                    if (sheet.GetRow(r) is IRow currentRow
-                        && (
-                             (!spreadsheetDefinition.EmptyCellsAllowed && !currentRow.Cells.Any(c => c.CellType == CellType.Blank))
-                             || (spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType != CellType.Blank))
-                           )
-                        )
-                    //&& (spreadsheetDefinition.EmptyCellsAllowed 
-                    //    || (!spreadsheetDefinition.EmptyCellsAllowed && !currentRow.Cells.Any(c => c.CellType == CellType.Blank))))
+                    if (sheet.GetRow(r) is IRow currentRow)
                     {
-                        // Iterate columns
+                        if (!spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType == CellType.Blank)) { 
+                            if (StopOnError)
+                            {
+                                result = null; // discard reading up to now
+                                throw new Exception($"Error in reading spreadsheet, row {r} contains empty cells. Stopped reading");
+                            }
+                        }
+                        bool firstRowErrorLogged = false;
+                        // Iterate columns 
                         for (int j = currentRow.FirstCellNum; j < cellCount; j++)
                         {
                             if (currentRow.GetCell(j) is ICell currentCell)
@@ -150,6 +150,8 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                 // Is row the first: add to header, otherwise add to value
                                 if (currentRow.RowNum == headerRow.RowNum)
                                 {
+                                    // Headerrow can not contain empty cells: it would be impossible to match the columns to the properties
+                                    // so depending on the StopOnError flag, either throw an exception or log an error and discard the column
                                     if (currentCell.CellType == CellType.Blank)
                                     {
                                         if (StopOnError)
@@ -159,7 +161,11 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                         }
                                         else
                                         {
-                                            _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
+                                            if (!firstRowErrorLogged) {
+                                                _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
+                                                firstRowErrorLogged = true;
+                                            }
+
                                         }
                                     }
                                     ColumnNames.Add(currentCellValue);
@@ -219,7 +225,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                                 }
                                                 else
                                                 {
-                                                    _logger.LogError($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i+1}. Row is skipped.");
+                                                    _logger.LogError("Error in reading spreadsheet, row {row},  column {counter}. Row is skipped.", currentRow.RowNum - headerRow.RowNum + 1, i+1);
                                                 }
                                             }
                                             else
