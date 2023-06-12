@@ -16,12 +16,15 @@ public class WWExtensionsComposer : IComposer
             // used for HtmlToPdf
             .AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()))
 
+            // custom databases
+            .AddSingleton<IWWDbService, WWDbService>()
+
+
             .AddScoped<IWWSearch, WWSearch>()
             .AddScoped<IWWFilter, WWFilter>()
             .AddScoped<IWWCacheService, WWCacheService>()
             .AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>()
             .AddScoped<IWWApiCallService, WWApiCallService>()
-            .AddScoped<IWWDbService, WWDbService>()
             .AddScoped<IWWHtmlToPdfService, WWHtmlToPdfService>()
             .AddScoped<IWWLanguage, WWLanguage>()
             .AddScoped<IWWRequestService, WWRequestService>();
