@@ -11633,7 +11633,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "10.4.7",
+    "version": "10.4.9",
     "restore": {
       "projectUniqueName": "C:\\Users\\frans\\Source\\Repos\\Webwonders.Umbraco.Extensions\\Webwonders.Umbraco.Extensions.csproj",
       "projectName": "Webwonders.Umbraco.Extensions",

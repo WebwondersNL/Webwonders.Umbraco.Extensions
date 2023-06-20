@@ -13,6 +13,9 @@ public class WWExtensionsComposer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.Services
+            // used for ApiCalls
+            .AddHttpClient()   
+
             // used for HtmlToPdf
             .AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()))
 

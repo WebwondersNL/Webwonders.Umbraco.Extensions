@@ -12,7 +12,25 @@ namespace Webwonders.Extensions;
 
 public interface IWWSpreadsheetHandler
 {
+    /// <summary>
+    /// Reads the spreadsheet and returns a class with the rows and columns
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="SpreadsheetFile">Spreadsheet to read</param>
+    /// <param name="StopOnError">If true: stops reading after an error, result will be null</param>
+    /// <returns>WWSpreadsheet containing data</returns>
     WWSpreadSheet ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class;
+
+
+    /// <summary>
+    /// Writes data to a spreadsheet, returning a memory stream
+    /// </summary>
+    /// <typeparam name="T">type of class to write</typeparam>
+    /// <param name="data">IEnumerable of <typeparamref name="T"/> containing data</param>
+    /// <param name="StopOnError">If true: stops writing after an error, result will be null</param>
+    /// <returns>Memorystream with spreadsheet</returns>
+    //MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class;
+
 }
 
 public class WWSpreadsheetHandler : IWWSpreadsheetHandler
@@ -21,7 +39,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
     private readonly ILogger<WWSpreadsheetHandler> _logger;
 
 
-    private class ObjectSpreadsheetRowDefinition
+    private class ObjectSpreadsheetColumnDefinition
     {
         public string PropertyName { get; set; }
         public string ColumnName { get; set; }
@@ -33,10 +51,10 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
     {
         public bool EmptyCellsAllowed { get; set; }
         public int? RepeatedFromColumn { get; set; }
-        public List<ObjectSpreadsheetRowDefinition> RowDefinitions { get; set; }
+        public List<ObjectSpreadsheetColumnDefinition> ColumnDefinitions { get; set; }
         public ObjectSpreadsheetDefinition()
         {
-            RowDefinitions = new List<ObjectSpreadsheetRowDefinition>();
+            ColumnDefinitions = new List<ObjectSpreadsheetColumnDefinition>();
         }
     }
 
@@ -69,7 +87,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
             {
                 if (propInfo.GetCustomAttribute<WWSpreadsheetColumnAttribute>() is WWSpreadsheetColumnAttribute columnAttribute)
                 {
-                    spreadsheetDefinition.RowDefinitions.Add(new ObjectSpreadsheetRowDefinition
+                    spreadsheetDefinition.ColumnDefinitions.Add(new ObjectSpreadsheetColumnDefinition
                     {
                         PropertyName = propInfo.Name,
                         ColumnName = columnAttribute?.ColumnName ?? "",
@@ -85,6 +103,77 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
 
         return result;
     }
+
+
+    /*
+     * STILL UNTESTED
+     */
+
+    //public MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class
+    //{
+    //    // First: get the definition of the spreadsheet and its rows
+    //    var spreadsheetDefinition = new ObjectSpreadsheetDefinition();
+    //    if (typeof(T).GetCustomAttribute<WWSpreadsheetAttribute>() is WWSpreadsheetAttribute spreadsheetAttribute)
+    //    {
+    //        spreadsheetDefinition.EmptyCellsAllowed = spreadsheetAttribute.EmptyCellsAllowed;
+    //        spreadsheetDefinition.RepeatedFromColumn = spreadsheetAttribute?.RepeatedFromColumn;
+    //    }
+    //    foreach (PropertyInfo propInfo in typeof(T).GetProperties())
+    //    {
+    //        if (propInfo.GetCustomAttribute<WWSpreadsheetColumnAttribute>() is WWSpreadsheetColumnAttribute columnAttribute)
+    //        {
+    //            spreadsheetDefinition.ColumnDefinitions.Add(new ObjectSpreadsheetColumnDefinition
+    //            {
+    //                PropertyName = propInfo.Name,
+    //                ColumnName = columnAttribute?.ColumnName ?? "",
+    //                ColumnRequired = columnAttribute?.ColumnRequired ?? false,
+    //                RepeatedColumn = false, // No repeated properties yet (perhaps in the future for a property containing a list)
+    //            });
+    //        }
+    //    }
+
+    //    if (spreadsheetDefinition.ColumnDefinitions.Count == 0)
+    //    {
+    //        if (!StopOnError)
+    //        {
+    //            return null;
+    //        }
+    //        throw new Exception("WWSpreadsheethandler, WriteSpreadsheet: No columns defined for spreadsheet");
+    //    }
+
+    //    // Next: write the data to the spreadsheet
+    //    IWorkbook workbook = new XSSFWorkbook();
+    //    ISheet sheet = workbook.CreateSheet();
+    //    IRow headerRow = sheet.CreateRow(0);
+    //    for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
+    //    {
+    //        headerRow.CreateCell(i).SetCellValue(spreadsheetDefinition.ColumnDefinitions[i].ColumnName);
+    //    }
+    //    foreach (T element in data)
+    //    {
+    //        IRow row = sheet.CreateRow(sheet.LastRowNum + 1);
+    //        for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
+    //        {
+    //            var columnDefinition = spreadsheetDefinition.ColumnDefinitions[i];
+    //            var value = element.GetType().GetProperty(columnDefinition.PropertyName).GetValue(element);
+
+    //            if (!spreadsheetDefinition.EmptyCellsAllowed && value == null && StopOnError)
+    //            {
+    //                return null;
+    //            }
+    //            if (columnDefinition.ColumnRequired && value == null && StopOnError)
+    //            {
+    //                return null;
+    //            }
+    //            row.CreateCell(i).SetCellValue(value?.ToString() ?? "");
+    //        }
+    //    }
+
+    //    using var exportData = new MemoryStream();
+    //    workbook.Write(exportData);
+    //    return exportData;
+    //}
+
 
 
     /// <summary>
@@ -133,7 +222,8 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                     // TODO empty rows
                     if (sheet.GetRow(r) is IRow currentRow)
                     {
-                        if (!spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType == CellType.Blank)) { 
+                        if (!spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType == CellType.Blank))
+                        {
                             if (StopOnError)
                             {
                                 result = null; // discard reading up to now
@@ -161,7 +251,8 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                         }
                                         else
                                         {
-                                            if (!firstRowErrorLogged) {
+                                            if (!firstRowErrorLogged)
+                                            {
                                                 _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
                                                 firstRowErrorLogged = true;
                                             }
@@ -199,16 +290,16 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                         // if the last columns are to be repeated and we are in one of those columns:
                                         // get the definition of the column to be repeated.
                                         // otherwise: get the definition of the current column
-                                        ObjectSpreadsheetRowDefinition propDef = null;
+                                        ObjectSpreadsheetColumnDefinition propDef = null;
                                         if (spreadsheetDefinition.RepeatedFromColumn != null
                                             && spreadsheetDefinition.RepeatedFromColumn.Value > 0
                                             && i >= spreadsheetDefinition.RepeatedFromColumn.Value)
                                         {
-                                            propDef = spreadsheetDefinition.RowDefinitions.FirstOrDefault(x => x.RepeatedColumn);
+                                            propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.RepeatedColumn);
                                         }
                                         else
                                         {
-                                            propDef = spreadsheetDefinition.RowDefinitions.FirstOrDefault(x => x.ColumnName.ToLower() == ColumnNames[i].ToLower());
+                                            propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.ColumnName.ToLower() == ColumnNames[i].ToLower());
                                         }
 
                                         // if the definition is found:
@@ -221,11 +312,11 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                                                 if (StopOnError)
                                                 {
                                                     result = null; // discard reading up to now.
-                                                    throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i+1}. Stopped reading");
+                                                    throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i + 1}. Stopped reading");
                                                 }
                                                 else
                                                 {
-                                                    _logger.LogError("Error in reading spreadsheet, row {row},  column {counter}. Row is skipped.", currentRow.RowNum - headerRow.RowNum + 1, i+1);
+                                                    _logger.LogError("Error in reading spreadsheet, row {row},  column {counter}. Row is skipped.", currentRow.RowNum - headerRow.RowNum + 1, i + 1);
                                                 }
                                             }
                                             else
