@@ -19,8 +19,10 @@ public interface IWWDbService
     // Select multiple
     IEnumerable<T> Select<T>() where T : WWDbBase;
     IEnumerable<T> Select<T>(string sql) where T : WWDbBase;
+    IEnumerable<T> Select<T>(int[] ids) where T : WWDbBase;
     IEnumerable<T> Select<T>(IUmbracoDatabase db) where T : WWDbBase;
     IEnumerable<T> Select<T>(IUmbracoDatabase db, string sql) where T : WWDbBase;
+    IEnumerable<T> Select<T>(IUmbracoDatabase db, int[] ids) where T : WWDbBase;
 
     // Select Deleted
     T SelectDeleted<T>(int id) where T : WWDbBase;
@@ -167,6 +169,26 @@ public class WWDbService : IWWDbService
 
 
     /// <summary>
+    /// Query table for all records that are not deleted and pass a list of Ids 
+    /// of the records that are to be returned
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="ids">array of integers</param>
+    /// <returns>all non-deleted records that have an id that is contained in ids</returns>
+    public IEnumerable<T> Select<T>(int[] ids) where T : WWDbBase 
+    { 
+        IEnumerable<T> result = Enumerable.Empty<T>();
+        using (IScope scope = _scopeProvider.CreateScope())
+        {
+            IUmbracoDatabase db = scope.Database;
+            result = Select<T>(db, ids);
+            scope.Complete();
+        }
+        return result;
+    }
+
+
+    /// <summary>
     /// Query table for all records that are not deleted and pass optional sql
     /// within an existing scope
     /// </summary>
@@ -201,6 +223,28 @@ public class WWDbService : IWWDbService
 
         return result;
 
+    }
+
+
+    /// <summary>
+    /// Query table for all records that are not deleted and pass a list of Ids 
+    /// of the records that are to be returned
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="db">database of scope</param>
+    /// <param name="ids">array of integers</param>
+    /// <returns>all non-deleted records that have an id that is contained in ids</returns>
+    public IEnumerable<T> Select<T>(IUmbracoDatabase db, int[] ids) where T : WWDbBase 
+    { 
+        IEnumerable<T> result = Enumerable.Empty<T>();
+        
+        if (db != null && ids != null && ids.Length > 0)
+        {
+            var idsString = string.Join(",", ids);
+            string sqlString = $"WHERE Deleted IS NULL AND Id IN ({idsString})";
+            result = db.Query<T>(sqlString);
+        }
+        return result;
     }
 
 
