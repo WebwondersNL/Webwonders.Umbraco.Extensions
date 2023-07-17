@@ -8,7 +8,7 @@
         <Product>$(AssemblyName)</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
-        <Version>10.4.12</Version>
+        <Version>10.4.13</Version>
         <Authors>Webwonders</Authors>
         <Company>$(Authors)</Company>
         <PackageProjectUrl>https://github.com/WebwondersNL/Webwonders.Umbraco.Extensions</PackageProjectUrl>
@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="App_Plugins\Webwonders.Umbraco.Extensions\**\*.*">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
         <None Include="build\**\*.*">
             <Pack>True</Pack>
             <PackagePath>buildTransitive</PackagePath>

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Webwonders.Umbraco.Extensions</id>
-    <version>10.4.12</version>
+    <version>10.4.13</version>
     <title>Webwonders.Umbraco.Extensions</title>
     <authors>Webwonders</authors>
     <license type="expression">MIT</license>
