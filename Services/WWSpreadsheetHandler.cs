@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,7 @@ public interface IWWSpreadsheetHandler
     /// <param name="data">IEnumerable of <typeparamref name="T"/> containing data</param>
     /// <param name="StopOnError">If true: stops writing after an error, result will be null</param>
     /// <returns>Memorystream with spreadsheet</returns>
-    //MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class;
+    MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class;
 
 }
 
@@ -68,7 +69,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
 
 
 
-
+    ///<inheritdoc />
     public WWSpreadSheet ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class
     {
         WWSpreadSheet result = null;
@@ -105,74 +106,108 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
     }
 
 
-    /*
-     * STILL UNTESTED
-     */
 
-    //public MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class
-    //{
-    //    // First: get the definition of the spreadsheet and its rows
-    //    var spreadsheetDefinition = new ObjectSpreadsheetDefinition();
-    //    if (typeof(T).GetCustomAttribute<WWSpreadsheetAttribute>() is WWSpreadsheetAttribute spreadsheetAttribute)
-    //    {
-    //        spreadsheetDefinition.EmptyCellsAllowed = spreadsheetAttribute.EmptyCellsAllowed;
-    //        spreadsheetDefinition.RepeatedFromColumn = spreadsheetAttribute?.RepeatedFromColumn;
-    //    }
-    //    foreach (PropertyInfo propInfo in typeof(T).GetProperties())
-    //    {
-    //        if (propInfo.GetCustomAttribute<WWSpreadsheetColumnAttribute>() is WWSpreadsheetColumnAttribute columnAttribute)
-    //        {
-    //            spreadsheetDefinition.ColumnDefinitions.Add(new ObjectSpreadsheetColumnDefinition
-    //            {
-    //                PropertyName = propInfo.Name,
-    //                ColumnName = columnAttribute?.ColumnName ?? "",
-    //                ColumnRequired = columnAttribute?.ColumnRequired ?? false,
-    //                RepeatedColumn = false, // No repeated properties yet (perhaps in the future for a property containing a list)
-    //            });
-    //        }
-    //    }
 
-    //    if (spreadsheetDefinition.ColumnDefinitions.Count == 0)
-    //    {
-    //        if (!StopOnError)
-    //        {
-    //            return null;
-    //        }
-    //        throw new Exception("WWSpreadsheethandler, WriteSpreadsheet: No columns defined for spreadsheet");
-    //    }
+    ///<inheritdoc />
+    public MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class
+    {
+        // First: get the definition of the spreadsheet and its rows
+        var spreadsheetDefinition = new ObjectSpreadsheetDefinition();
+        if (typeof(T).GetCustomAttribute<WWSpreadsheetAttribute>() is WWSpreadsheetAttribute spreadsheetAttribute)
+        {
+            spreadsheetDefinition.EmptyCellsAllowed = spreadsheetAttribute.EmptyCellsAllowed;
+            spreadsheetDefinition.RepeatedFromColumn = spreadsheetAttribute?.RepeatedFromColumn;
+        }
+        foreach (PropertyInfo propInfo in typeof(T).GetProperties())
+        {
+            if (propInfo.GetCustomAttribute<WWSpreadsheetColumnAttribute>() is WWSpreadsheetColumnAttribute columnAttribute)
+            {
+                spreadsheetDefinition.ColumnDefinitions.Add(new ObjectSpreadsheetColumnDefinition
+                {
+                    PropertyName = propInfo.Name,
+                    ColumnName = columnAttribute?.ColumnName ?? "",
+                    ColumnRequired = columnAttribute?.ColumnRequired ?? false,
+                    RepeatedColumn = columnAttribute?.RepeatedColumn ?? false
+                    //false, // No repeated properties yet (perhaps in the future for a property containing a list)
+                });
+            }
+        }
 
-    //    // Next: write the data to the spreadsheet
-    //    IWorkbook workbook = new XSSFWorkbook();
-    //    ISheet sheet = workbook.CreateSheet();
-    //    IRow headerRow = sheet.CreateRow(0);
-    //    for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
-    //    {
-    //        headerRow.CreateCell(i).SetCellValue(spreadsheetDefinition.ColumnDefinitions[i].ColumnName);
-    //    }
-    //    foreach (T element in data)
-    //    {
-    //        IRow row = sheet.CreateRow(sheet.LastRowNum + 1);
-    //        for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
-    //        {
-    //            var columnDefinition = spreadsheetDefinition.ColumnDefinitions[i];
-    //            var value = element.GetType().GetProperty(columnDefinition.PropertyName).GetValue(element);
+        if (spreadsheetDefinition.ColumnDefinitions.Count == 0)
+        {
+            if (!StopOnError)
+            {
+                return null;
+            }
+            throw new Exception("WWSpreadsheethandler, WriteSpreadsheet: No columns defined for spreadsheet");
+        }
 
-    //            if (!spreadsheetDefinition.EmptyCellsAllowed && value == null && StopOnError)
-    //            {
-    //                return null;
-    //            }
-    //            if (columnDefinition.ColumnRequired && value == null && StopOnError)
-    //            {
-    //                return null;
-    //            }
-    //            row.CreateCell(i).SetCellValue(value?.ToString() ?? "");
-    //        }
-    //    }
+        // Next: write the data to the spreadsheet
+        var workbook = new XSSFWorkbook();
+        ISheet sheet = workbook.CreateSheet();
+        IRow headerRow = sheet.CreateRow(0);
+        for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
+        {
+            headerRow.CreateCell(i).SetCellValue(spreadsheetDefinition.ColumnDefinitions[i].ColumnName);
+        }
+        foreach (T element in data)
+        {
+            IRow row = sheet.CreateRow(sheet.LastRowNum + 1);
+            for (int i = 0; i < spreadsheetDefinition.ColumnDefinitions.Count; i++)
+            {
+                var columnDefinition = spreadsheetDefinition.ColumnDefinitions[i];
 
-    //    using var exportData = new MemoryStream();
-    //    workbook.Write(exportData);
-    //    return exportData;
-    //}
+                var value = element.GetType().GetProperty(columnDefinition.PropertyName)?.GetValue(element);
+
+                if (!spreadsheetDefinition.EmptyCellsAllowed && value == null && StopOnError)
+                {
+                    return null;
+                }
+                if (columnDefinition.ColumnRequired && value == null && StopOnError)
+                {
+                    return null;
+                }
+
+
+                if (columnDefinition.RepeatedColumn && i == spreadsheetDefinition.ColumnDefinitions.Count - 1)
+                {
+                    // repeated column (can only be the last one): write the value as an array
+                    object[] array = null;
+                    if (value != null)
+                    {
+                        // make sure that value is an array or enumerable
+                        if (value.GetType().IsArray)
+                        {
+                            array = (object[])value;
+                        }
+                        else if (value is IEnumerable enumerable)
+                        {
+                            array = enumerable.Cast<object>().ToArray();
+                        }
+                        if (array != null)
+                        {
+                            //create cells for each element in the array
+                            for (int j = 0; j < array.Length; j++)
+                            {
+                                row.CreateCell(i + j).SetCellValue(array[j]?.ToString() ?? "");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Normal column, just write the value
+                    row.CreateCell(i).SetCellValue(value?.ToString() ?? "");
+                }
+            }
+        }
+
+        using var exportData = new MemoryStream();
+        workbook.Write(exportData, true); // true to leave stream open
+        return exportData;
+    }
+
+
 
 
 

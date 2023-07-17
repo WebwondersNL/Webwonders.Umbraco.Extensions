@@ -22,7 +22,6 @@ public class WWExtensionsComposer : IComposer
             // custom databases
             .AddSingleton<IWWDbService, WWDbService>()
 
-
             .AddScoped<IWWSearch, WWSearch>()
             .AddScoped<IWWFilter, WWFilter>()
             .AddScoped<IWWCacheService, WWCacheService>()
