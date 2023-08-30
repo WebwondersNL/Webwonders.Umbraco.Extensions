@@ -19,6 +19,13 @@ public enum Orientation
 }
 
 
+public enum ContentErrorHandling
+{
+    Abort,
+    Skip,
+    Ignore
+}
+
 public enum PaperKind
 {
     Custom = WkHtmlToPdfDotNet.PaperKind.Custom,
@@ -156,12 +163,12 @@ public class WWHtmlToPdfSettings
     /// <summary>
     /// The orientation of the output document, must be either "Landscape" or "Portrait". Default = "portrait"
     /// </summary>
-    public Orientation? Orientation { get; set; } = Webwonders.Extensions.Orientation.Portrait;
+    public Orientation Orientation { get; set; } = Webwonders.Extensions.Orientation.Portrait;
 
     /// <summary>
     /// Should the output be printed in color or gray scale, must be either "Color" or "Grayscale". Default = "color"
     /// </summary>
-    public ColorMode? ColorMode { get; set; } = Webwonders.Extensions.ColorMode.Color;
+    public ColorMode ColorMode { get; set; } = Webwonders.Extensions.ColorMode.Color;
 
     /// <summary>
     /// Should we use loss less compression when creating the pdf file. Default = true
@@ -231,8 +238,7 @@ public class WWHtmlToPdfSettings
     /// <summary>
     /// Size of output paper. Default = A4
     /// </summary>
-    public PechkinPaperSize PaperSize { get; set; } = WkHtmlToPdfDotNet.PaperKind.A4;
-
+    public PaperKind PaperSize { get; set; } = PaperKind.A4;
 
     /// <summary>
     /// MarginSettings to use
@@ -458,7 +464,7 @@ public class WWHtmlToPdfSettings
     /// <summary>
     /// How should we handle obejcts that fail to load. Default = Abort
     /// </summary>
-    public ContentErrorHandling? LoadErrorHandling { get; set; } = ContentErrorHandling.Abort;
+    public ContentErrorHandling LoadErrorHandling { get; set; } = ContentErrorHandling.Abort;
 
     /// <summary>
     /// String describing what proxy to use when loading the object. Default = ""
@@ -496,6 +502,18 @@ public class WWHtmlToPdfSettings
 
         return (Encoding ?? Encoding.UTF8).GetBytes(HtmlContent);
     }
+
+
+    // is this still necessary?
+    //public static TTargetEnum ConvertEnum<TSourceEnum, TTargetEnum>(TSourceEnum sourceEnum)
+    //    where TTargetEnum : struct, Enum
+    //    where TSourceEnum : struct, Enum
+    //{
+    //    if (!Enum.IsDefined(typeof(TSourceEnum), sourceEnum))
+    //        throw new ArgumentException($"Invalid {typeof(TSourceEnum).Name} value.", nameof(sourceEnum));
+
+    //    return (TTargetEnum)Enum.ToObject(typeof(TTargetEnum), Convert.ToInt32(sourceEnum));
+    //}
 
 
 

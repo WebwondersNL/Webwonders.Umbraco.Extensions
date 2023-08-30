@@ -34,7 +34,7 @@ public class WWSpreadsheetColumnAttribute : System.Attribute
     /// <summary>
     /// Name of the column in the spreadsheet
     /// </summary>
-    public string ColumnName { get; set; }
+    public string? ColumnName { get; set; }
 
 
     /// <summary>
@@ -53,9 +53,9 @@ public class WWSpreadsheetColumnAttribute : System.Attribute
 
 public class WWSpreadsheetCell
 {
-    public string ColumName { get; set; }
-    public string ColumnValue { get; set; }
-    public string PropertyName { get; set; }
+    public string? ColumName { get; set; }
+    public string? ColumnValue { get; set; }
+    public string? PropertyName { get; set; }
     public bool IsRequired { get; set; }
 }
 

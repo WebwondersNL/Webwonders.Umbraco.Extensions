@@ -11,6 +11,7 @@
         <Version>10.5.1</Version>
         <Authors>Webwonders</Authors>
         <Company>$(Authors)</Company>
+        <Nullable>enable</Nullable>
         <PackageProjectUrl>https://github.com/WebwondersNL/Webwonders.Umbraco.Extensions</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>

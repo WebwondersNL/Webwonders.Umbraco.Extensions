@@ -3,6 +3,7 @@ using System.Drawing.Text;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using RazorLight;
+using Umbraco.Cms.Core.Sections;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
 using WkHtmlToPdfDotNet;
@@ -53,10 +54,10 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
     /// In the pdfType folder three views can be located: Body.cshtml, Header.cshtml and Footer.cshtml
     /// Body.cshtml is the main view and required. 
     /// It is possible to pass a custom header and footer in the settings. When none are given, the default header and footer will be used.
-    /// The given viewmodel is passes to all three views.
+    /// The given viewmodel is passed to all three views.
     /// There are booleans to indicate no header and/or footer should be used.
     /// </summary>
-    /// <param name="pdfType">Type of the pdf (subfolder of views/pdf that will be searched)</param>
+    /// <param name="pdfType">Type of the pdf (name of subfolder of views/pdf that will be searched)</param>
     /// <param name="viewName">Name of the view (in view/pdf/{type})</param>
     /// <param name="viewModel">Model to pass to view and if necessary to header and/or footer</param>
     /// <param name="settings">Settings of pdf</param>
@@ -176,8 +177,8 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
         return new HtmlToPdfDocument
         {
             GlobalSettings = {
-                Orientation = settings.Orientation == null ? WkHtmlToPdfDotNet.Orientation.Portrait : (WkHtmlToPdfDotNet.Orientation)settings.Orientation,
-                ColorMode = settings.ColorMode == null ? WkHtmlToPdfDotNet.ColorMode.Color : (WkHtmlToPdfDotNet.ColorMode)settings.ColorMode,
+                Orientation = (WkHtmlToPdfDotNet.Orientation)settings.Orientation,
+                ColorMode = (WkHtmlToPdfDotNet.ColorMode)settings.ColorMode,
                 UseCompression = settings.UseCompression,
                 DPI = settings.DPI,
                 PageOffset = settings.PageOffset,
@@ -191,7 +192,7 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
                 ImageDPI = settings.ImageDPI,
                 ImageQuality = settings.ImageQuality,
                 CookieJar = settings.CookieJar,
-                PaperSize = settings.PaperSize,
+                PaperSize = (WkHtmlToPdfDotNet.PaperKind)settings.PaperSize,
                 Margins = settings.Margins,
             },
             Objects = {
@@ -244,7 +245,7 @@ public class WWHtmlToPdfService : IWWHtmlToPdfService
                         BlockLocalFileAccess = settings.BlockLocalFileAccess,
                         StopSlowScript = settings.StopSlowScript,
                         DebugJavascript = settings.DebugJavascript,
-                        LoadErrorHandling = settings.LoadErrorHandling,
+                        LoadErrorHandling = (WkHtmlToPdfDotNet.ContentErrorHandling)settings.LoadErrorHandling,
                         Proxy = settings.Proxy,
                         CustomHeaders = settings.CustomHeaders,
                         RepeatCustomHeaders = settings.RepeatCustomHeaders,

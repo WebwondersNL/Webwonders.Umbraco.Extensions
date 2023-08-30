@@ -20,7 +20,7 @@ public interface IWWSpreadsheetHandler
     /// <param name="SpreadsheetFile">Spreadsheet to read</param>
     /// <param name="StopOnError">If true: stops reading after an error, result will be null</param>
     /// <returns>WWSpreadsheet containing data</returns>
-    WWSpreadSheet ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class;
+    WWSpreadSheet? ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class;
 
 
     /// <summary>
@@ -30,7 +30,7 @@ public interface IWWSpreadsheetHandler
     /// <param name="data">IEnumerable of <typeparamref name="T"/> containing data</param>
     /// <param name="StopOnError">If true: stops writing after an error, result will be null</param>
     /// <returns>Memorystream with spreadsheet</returns>
-    MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class;
+    MemoryStream? WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class;
 
 }
 
@@ -42,8 +42,8 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
 
     private class ObjectSpreadsheetColumnDefinition
     {
-        public string PropertyName { get; set; }
-        public string ColumnName { get; set; }
+        public string? PropertyName { get; set; }
+        public string? ColumnName { get; set; }
         public bool ColumnRequired { get; set; }
         public bool RepeatedColumn { get; set; }
     }
@@ -70,9 +70,9 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
 
 
     ///<inheritdoc />
-    public WWSpreadSheet ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class
+    public WWSpreadSheet? ReadSpreadsheet<T>(string SpreadsheetFile, bool StopOnError = false) where T : class
     {
-        WWSpreadSheet result = null;
+        WWSpreadSheet? result = null;
 
         var spreadsheetFile = new FileInfo(SpreadsheetFile);
         if (spreadsheetFile != null && spreadsheetFile.Exists)
@@ -109,7 +109,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
 
 
     ///<inheritdoc />
-    public MemoryStream WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class
+    public MemoryStream? WriteSpreadsheet<T>(IEnumerable<T> data, bool StopOnError) where T : class
     {
         // First: get the definition of the spreadsheet and its rows
         var spreadsheetDefinition = new ObjectSpreadsheetDefinition();
@@ -157,7 +157,11 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
             {
                 var columnDefinition = spreadsheetDefinition.ColumnDefinitions[i];
 
-                var value = element.GetType().GetProperty(columnDefinition.PropertyName)?.GetValue(element);
+                object? value = null;
+                if (!String.IsNullOrWhiteSpace(columnDefinition.PropertyName))
+                {
+                    value = element.GetType().GetProperty(columnDefinition.PropertyName)?.GetValue(element);
+                }
 
                 if (!spreadsheetDefinition.EmptyCellsAllowed && value == null && StopOnError)
                 {
@@ -172,7 +176,7 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
                 if (columnDefinition.RepeatedColumn && i == spreadsheetDefinition.ColumnDefinitions.Count - 1)
                 {
                     // repeated column (can only be the last one): write the value as an array
-                    object[] array = null;
+                    object[]? array = null;
                     if (value != null)
                     {
                         // make sure that value is an array or enumerable
@@ -220,160 +224,157 @@ public class WWSpreadsheetHandler : IWWSpreadsheetHandler
     /// <param name="StopOnError"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    private WWSpreadSheet ReadSpreadSheet(FileInfo spreadsheetFile, ObjectSpreadsheetDefinition spreadsheetDefinition, bool StopOnError = false)
+    private WWSpreadSheet? ReadSpreadSheet(FileInfo spreadsheetFile, ObjectSpreadsheetDefinition spreadsheetDefinition, bool StopOnError = false)
     {
-        WWSpreadSheet result = null;
+        WWSpreadSheet? result = null;
 
         if (spreadsheetFile != null && spreadsheetFile.Exists)
         {
 
 
-            using (var stream = spreadsheetFile.Open(FileMode.Open))
+            using var stream = spreadsheetFile.Open(FileMode.Open);         
+            stream.Position = 0;
+            
+            var xssWorkbook = new XSSFWorkbook(stream);
+            ISheet sheet = xssWorkbook.GetSheetAt(0);
+
+
+            var ColumnNames = new List<string>();
+            var ColumnValues = new Dictionary<int, string>();
+
+
+            IRow headerRow = sheet.GetRow(0);
+            int cellCount = headerRow.LastCellNum;
+
+
+            for (int r = (sheet.FirstRowNum); r <= sheet.LastRowNum; r++)
             {
-                stream.Position = 0;
-                XSSFWorkbook xssWorkbook = new XSSFWorkbook(stream);
-                ISheet sheet = xssWorkbook.GetSheetAt(0);
 
+                // Reinit the values
+                ColumnValues = new Dictionary<int, string>();
 
-                List<String> ColumnNames = new List<string>();
-                Dictionary<int, String> ColumnValues = new Dictionary<int, string>();
+                result ??= new WWSpreadSheet();
 
-
-                IRow headerRow = sheet.GetRow(0);
-                int cellCount = headerRow.LastCellNum;
-
-
-                for (int r = (sheet.FirstRowNum); r <= sheet.LastRowNum; r++)
+                // TODO empty rows
+                if (sheet.GetRow(r) is IRow currentRow)
                 {
-
-                    // Reinit the values
-                    ColumnValues = new Dictionary<int, string>();
-
-                    if (result == null)
+                    if (!spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType == CellType.Blank))
                     {
-                        result = new WWSpreadSheet();
+                        if (StopOnError)
+                        {
+                            result = null; // discard reading up to now
+                            throw new Exception($"Error in reading spreadsheet, row {r} contains empty cells. Stopped reading");
+                        }
+                    }
+                    bool firstRowErrorLogged = false;
+                    // Iterate columns 
+                    for (int j = currentRow.FirstCellNum; j < cellCount; j++)
+                    {
+                        if (currentRow.GetCell(j) is ICell currentCell)
+                        {
+                            string currentCellValue = (currentCell.CellType != CellType.Blank) ? (currentCell.ToString() ?? "") 
+                                                                                               : "";
+                            // Is row the first: add to header, otherwise add to value
+                            if (currentRow.RowNum == headerRow.RowNum)
+                            {
+                                // Headerrow can not contain empty cells: it would be impossible to match the columns to the properties
+                                // so depending on the StopOnError flag, either throw an exception or log an error and discard the column
+                                if (currentCell.CellType == CellType.Blank)
+                                {
+                                    if (StopOnError)
+                                    {
+                                        result = null; // discard reading up to now
+                                        throw new Exception($"Error in reading spreadsheet, first row contains empty column. Stopped reading");
+                                    }
+                                    else
+                                    {
+                                        if (!firstRowErrorLogged)
+                                        {
+                                            _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
+                                            firstRowErrorLogged = true;
+                                        }
+
+                                    }
+                                }
+                                ColumnNames.Add(currentCellValue);
+                            }
+                            else
+                            {
+                                ColumnValues.Add(currentCell.ColumnIndex, currentCellValue);
+                            }
+
+                        }
                     }
 
-                    // TODO empty rows
-                    if (sheet.GetRow(r) is IRow currentRow)
+                    // for all rows except the header: create a WWSpreadsheetRow
+                    // and all contained WWSpreadsheetCells
+                    if (currentRow.RowNum != headerRow.RowNum)
                     {
-                        if (!spreadsheetDefinition.EmptyCellsAllowed && currentRow.Cells.Any(c => c.CellType == CellType.Blank))
+                        if (ColumnValues.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Any())
                         {
-                            if (StopOnError)
+                            result.Rows.Add(new WWSpreadsheetRow(currentRow.RowNum - headerRow.RowNum + 1)); // number in spreadsheetrow is actual number + 2,
+                                                                                                             // so it skips the title and starts at 1 instead of 0
+                                                                                                             // this wil make the muber the same as the actual spreadsheet row number
+                            for (int i = 0; i < ColumnNames.Count; i++)
                             {
-                                result = null; // discard reading up to now
-                                throw new Exception($"Error in reading spreadsheet, row {r} contains empty cells. Stopped reading");
-                            }
-                        }
-                        bool firstRowErrorLogged = false;
-                        // Iterate columns 
-                        for (int j = currentRow.FirstCellNum; j < cellCount; j++)
-                        {
-                            if (currentRow.GetCell(j) is ICell currentCell)
-                            {
-                                string currentCellValue = (currentCell.CellType != CellType.Blank) ? currentCell.ToString() : "";
-                                // Is row the first: add to header, otherwise add to value
-                                if (currentRow.RowNum == headerRow.RowNum)
+                                if (!String.IsNullOrEmpty(ColumnNames[i]))
                                 {
-                                    // Headerrow can not contain empty cells: it would be impossible to match the columns to the properties
-                                    // so depending on the StopOnError flag, either throw an exception or log an error and discard the column
-                                    if (currentCell.CellType == CellType.Blank)
+                                    string currentColumnsValue = "";
+                                    if (ColumnValues.ContainsKey(i))
                                     {
-                                        if (StopOnError)
-                                        {
-                                            result = null; // discard reading up to now
-                                            throw new Exception($"Error in reading spreadsheet, first row contains empty column. Stopped reading");
-                                        }
-                                        else
-                                        {
-                                            if (!firstRowErrorLogged)
-                                            {
-                                                _logger.LogError($"Error in reading spreadsheet, first row contains empty column. Column is skipped.");
-                                                firstRowErrorLogged = true;
-                                            }
-
-                                        }
+                                        currentColumnsValue = ColumnValues[i];
                                     }
-                                    ColumnNames.Add(currentCellValue);
-                                }
-                                else
-                                {
-                                    ColumnValues.Add(currentCell.ColumnIndex, currentCellValue);
-                                }
-
-                            }
-                        }
-
-                        // for all rows except the header: create a WWSpreadsheetRow
-                        // and all contained WWSpreadsheetCells
-                        if (currentRow.RowNum != headerRow.RowNum)
-                        {
-                            if (ColumnValues.Where(x => !String.IsNullOrWhiteSpace(x.Value)).Any())
-                            {
-                                result.Rows.Add(new WWSpreadsheetRow(currentRow.RowNum - headerRow.RowNum + 1)); // number in spreadsheetrow is actual number + 2,
-                                                                                                                 // so it skips the title and starts at 1 instead of 0
-                                                                                                                 // this wil make the muber the same as the actual spreadsheet row number
-                                for (int i = 0; i < ColumnNames.Count; i++)
-                                {
-                                    if (!String.IsNullOrEmpty(ColumnNames[i]))
+                                    // if the last columns are to be repeated and we are in one of those columns:
+                                    // get the definition of the column to be repeated.
+                                    // otherwise: get the definition of the current column
+                                    ObjectSpreadsheetColumnDefinition? propDef = null;
+                                    if (spreadsheetDefinition.RepeatedFromColumn != null
+                                        && spreadsheetDefinition.RepeatedFromColumn.Value > 0
+                                        && i >= spreadsheetDefinition.RepeatedFromColumn.Value)
                                     {
-                                        string currentColumnsValue = "";
-                                        if (ColumnValues.ContainsKey(i))
-                                        {
-                                            currentColumnsValue = ColumnValues[i];
-                                        }
-                                        // if the last columns are to be repeated and we are in one of those columns:
-                                        // get the definition of the column to be repeated.
-                                        // otherwise: get the definition of the current column
-                                        ObjectSpreadsheetColumnDefinition propDef = null;
-                                        if (spreadsheetDefinition.RepeatedFromColumn != null
-                                            && spreadsheetDefinition.RepeatedFromColumn.Value > 0
-                                            && i >= spreadsheetDefinition.RepeatedFromColumn.Value)
-                                        {
-                                            propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.RepeatedColumn);
-                                        }
-                                        else
-                                        {
-                                            propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.ColumnName.ToLower() == ColumnNames[i].ToLower());
-                                        }
+                                        propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.RepeatedColumn);
+                                    }
+                                    else
+                                    {
+                                        propDef = spreadsheetDefinition.ColumnDefinitions.FirstOrDefault(x => x.ColumnName?.ToLower() == ColumnNames[i].ToLower());
+                                    }
 
-                                        // if the definition is found:
-                                        // add the row when valid
-                                        // use the correct columnname by getting it from the previously collected names
-                                        if (propDef != null)
+                                    // if the definition is found:
+                                    // add the row when valid
+                                    // use the correct columnname by getting it from the previously collected names
+                                    if (propDef != null)
+                                    {
+                                        if (propDef.ColumnRequired && currentColumnsValue.IsNullOrWhiteSpace())
                                         {
-                                            if (propDef.ColumnRequired && currentColumnsValue.IsNullOrWhiteSpace())
+                                            if (StopOnError)
                                             {
-                                                if (StopOnError)
-                                                {
-                                                    result = null; // discard reading up to now.
-                                                    throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i + 1}. Stopped reading");
-                                                }
-                                                else
-                                                {
-                                                    _logger.LogError("Error in reading spreadsheet, row {row},  column {counter}. Row is skipped.", currentRow.RowNum - headerRow.RowNum + 1, i + 1);
-                                                }
+                                                result = null; // discard reading up to now.
+                                                throw new Exception($"Error in reading spreadsheet, row {currentRow.RowNum - headerRow.RowNum + 1},  column {i + 1}. Stopped reading");
                                             }
                                             else
                                             {
-                                                // only add if required and given or not required
-                                                //result.Rows[currentRow.RowNum - headerRow.RowNum - 1].Cells.Add(new WWSpreadsheetCell { ColumName = ColumnNames[i], ColumnValue = ColumnValues[i], PropertyName = propDef.PropertyName, IsRequired = propDef.ColumnRequired });
-                                                // add to the last row, we always go from top to bottom in the spreadsheet
-                                                result.Rows.Last().Cells.Add(new WWSpreadsheetCell { ColumName = ColumnNames[i], ColumnValue = currentColumnsValue, PropertyName = propDef.PropertyName, IsRequired = propDef.ColumnRequired });
+                                                _logger.LogError("Error in reading spreadsheet, row {row},  column {counter}. Row is skipped.", currentRow.RowNum - headerRow.RowNum + 1, i + 1);
                                             }
                                         }
+                                        else
+                                        {
+                                            // only add if required and given or not required
+                                            //result.Rows[currentRow.RowNum - headerRow.RowNum - 1].Cells.Add(new WWSpreadsheetCell { ColumName = ColumnNames[i], ColumnValue = ColumnValues[i], PropertyName = propDef.PropertyName, IsRequired = propDef.ColumnRequired });
+                                            // add to the last row, we always go from top to bottom in the spreadsheet
+                                            result.Rows.Last().Cells.Add(new WWSpreadsheetCell { ColumName = ColumnNames[i], ColumnValue = currentColumnsValue, PropertyName = propDef.PropertyName, IsRequired = propDef.ColumnRequired });
+                                        }
                                     }
-                                    // in later rows: if the property is found in the definition:
-                                    // make cell of columname, value and propertyName and add to current row in fullspreadsheet
-                                    // only if the column has a name to avoid probles with KeyValue (columns without title cannot be mapped)
-                                    // row - startRow - 1, because first row contains columnames and is ignored in result
                                 }
+                                // in later rows: if the property is found in the definition:
+                                // make cell of columname, value and propertyName and add to current row in fullspreadsheet
+                                // only if the column has a name to avoid probles with KeyValue (columns without title cannot be mapped)
+                                // row - startRow - 1, because first row contains columnames and is ignored in result
                             }
-                        } // Save row
-                    }
-
-
+                        }
+                    } // Save row
                 }
+
+
             }
 
         }
