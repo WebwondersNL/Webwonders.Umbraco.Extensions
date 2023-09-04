@@ -58,7 +58,8 @@ public static class StringExtensions
     ///<returns>Returns true if the value is null, empty, or consists only of white-space characters, otherwise returns false.</returns>
     public static bool IsNullOrWhiteSpace(this IHtmlEncodedString value)
     {
-        return string.IsNullOrWhiteSpace(Regex.Replace(HttpUtility.HtmlDecode(value.ToString()), "<.*?>", string.Empty));
+        var decoded = HttpUtility.HtmlDecode(value.ToString());
+        return (string.IsNullOrWhiteSpace(decoded)) || string.IsNullOrWhiteSpace(Regex.Replace(decoded, "<.*?>", string.Empty));
     }
 
 }

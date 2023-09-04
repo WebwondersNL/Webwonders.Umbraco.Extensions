@@ -16,8 +16,9 @@ namespace Webwonders.Umbraco.Extensions;
 
 public interface IWWRequestService
 {
-    Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> GetMultiPartRequestAsync(HttpRequest request, HttpContext httpContext, ModelStateDictionary modelState,
-                                                                                       string[]? permittedExtensions = null, long fileSizeLimit = 10485760 /*10 MB*/);
+    Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> GetMultiPartRequestAsync(HttpRequest request, HttpContext httpContext, 
+                                                                                                ModelStateDictionary modelState, string[]? permittedExtensions = null, 
+                                                                                                long fileSizeLimit = 10485760 /*10 MB*/);
 }
 
 public class WWRequestService : IWWRequestService
@@ -115,7 +116,7 @@ public class WWRequestService : IWWRequestService
     }
 
 
-    private static bool IsMultipartContentType(string contentType)
+    private static bool IsMultipartContentType(string? contentType)
     {
         return !string.IsNullOrEmpty(contentType) && contentType.Contains("multipart/", StringComparison.OrdinalIgnoreCase);
     }
@@ -143,7 +144,7 @@ public class WWRequestService : IWWRequestService
 
 
 
-    private static bool HasFileContentDisposition(ContentDispositionHeaderValue contentDisposition)
+    private static bool HasFileContentDisposition(ContentDispositionHeaderValue? contentDisposition)
     {
         // Content-Disposition: form-data; name="myfile1"; filename="Misc 002.jpg"
         return contentDisposition != null
@@ -153,7 +154,7 @@ public class WWRequestService : IWWRequestService
     }
 
 
-    private static bool HasFormDataContentDisposition(ContentDispositionHeaderValue contentDisposition)
+    private static bool HasFormDataContentDisposition(ContentDispositionHeaderValue? contentDisposition)
     {
         // Content-Disposition: form-data; name="key";
         return contentDisposition != null

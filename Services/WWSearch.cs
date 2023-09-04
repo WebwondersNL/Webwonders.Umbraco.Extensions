@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Examine;
-using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Mapping;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Web;
@@ -25,18 +24,16 @@ public class WWSearch : IWWSearch
     private readonly IUmbracoContextFactory _umbracoContextFactory;
     private readonly IExamineManager _examineManager;
     private readonly IUmbracoMapper _mapper;
-    //private readonly ILogger<WWSearch> _logger;
 
     private const string HideInSiteSearch = "hideInSiteSearch";
     private const string TrueString = "1";
 
 
-    public WWSearch(IUmbracoContextFactory umbracoContextFactory, IExamineManager examineManager, IUmbracoMapper mapper, ILogger<WWSearch> logger)
+    public WWSearch(IUmbracoContextFactory umbracoContextFactory, IExamineManager examineManager, IUmbracoMapper mapper)
     {
         _umbracoContextFactory = umbracoContextFactory;
         _examineManager = examineManager;
         _mapper = mapper;
-        //_logger = logger;
     }
 
 
@@ -50,10 +47,8 @@ public class WWSearch : IWWSearch
     public List<T> Search<T>(WWSearchParameters searchParameters) where T : IPublishedContent
     {
 
-        List<T> result = new List<T>();
+        var result = new List<T>();
 
-        //try
-        //{
         if (searchParameters == null)
         {
             throw new ArgumentNullException(nameof(searchParameters));
@@ -88,14 +83,18 @@ public class WWSearch : IWWSearch
             {
                 if (typeof(T) == typeof(IPublishedContent))
                 {
-                    if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
+                    if (umbracoContextReference?.UmbracoContext?.Content?.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
                     {
                         result.Add((T)resultpage);
                     }
                 }
                 else
                 {
-                    result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                    var mappedResult = _mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); });
+                    if (mappedResult != null)
+                    {
+                        result.Add(mappedResult);
+                    }
                 }
             }
         }
@@ -113,14 +112,18 @@ public class WWSearch : IWWSearch
                     {
                         if (typeof(T) == typeof(IPublishedContent))
                         {
-                            if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
+                            if (umbracoContextReference?.UmbracoContext?.Content?.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
                             {
                                 result.Add((T)resultpage);
                             }
                         }
                         else
                         {
-                            result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                            var mappedResult = _mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); });
+                            if (mappedResult != null)
+                            {
+                                result.Add(mappedResult);
+                            }
                         }
                     }
                 }
@@ -132,24 +135,22 @@ public class WWSearch : IWWSearch
                 {
                     if (typeof(T) == typeof(IPublishedContent))
                     {
-                        if (umbracoContextReference.UmbracoContext.Content.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
+                        if (umbracoContextReference?.UmbracoContext?.Content?.GetById(int.Parse(searchResult.Id)) is IPublishedContent resultpage)
                         {
                             result.Add((T)resultpage);
                         }
                     }
                     else
                     {
-                        result.Add(_mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); }));
+                        var mappedResult = _mapper.Map<ISearchResult, T>(searchResult, context => { context.SetCulture(searchParameters.Culture); });
+                        if (mappedResult != null)
+                        {
+                            result.Add(mappedResult);
+                        }
                     }
                 }
             }
         }
-        //}
-        //catch (Exception ex)
-        //{
-        //    _logger.LogError(ex, "WWSearch GetResults: Exception {0} | Message {1}", ex.InnerException?.ToString(), ex.Message?.ToString());
-        //    return result;
-        //}
 
         // Todo number of maxresults can be moved to query above
         result = (searchParameters.MaxResults < 0) ? result : result.Take(searchParameters.MaxResults).ToList();
