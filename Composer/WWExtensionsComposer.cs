@@ -16,9 +16,6 @@ public class WWExtensionsComposer : IComposer
             // used for ApiCalls
             .AddHttpClient()   
 
-            // used for HtmlToPdf
-            .AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()))
-
             // custom databases
             .AddSingleton<IWWDbService, WWDbService>()
 
@@ -27,7 +24,6 @@ public class WWExtensionsComposer : IComposer
             .AddScoped<IWWCacheService, WWCacheService>()
             .AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>()
             .AddScoped<IWWApiCallService, WWApiCallService>()
-            .AddScoped<IWWHtmlToPdfService, WWHtmlToPdfService>()
             .AddScoped<IWWLanguage, WWLanguage>()
             .AddScoped<IWWRequestService, WWRequestService>();
     }

@@ -16,8 +16,8 @@ namespace Webwonders.Umbraco.Extensions;
 
 public interface IWWRequestService
 {
-    Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> getMultiPartRequestAsync(HttpRequest request, HttpContext httpContext, ModelStateDictionary modelState,
-                                                                                       string[] permittedExtensions = null, long fileSizeLimit = 10485760 /*10 MB*/);
+    Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> GetMultiPartRequestAsync(HttpRequest request, HttpContext httpContext, ModelStateDictionary modelState,
+                                                                                       string[]? permittedExtensions = null, long fileSizeLimit = 10485760 /*10 MB*/);
 }
 
 public class WWRequestService : IWWRequestService
@@ -25,10 +25,10 @@ public class WWRequestService : IWWRequestService
 
     private static readonly string[] _permittedExtensions = { ".xls", ".xlsx" };
 
-    public async Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> getMultiPartRequestAsync(HttpRequest request,
+    public async Task<(Dictionary<string, StringValues> keyValues, IFormFile file)> GetMultiPartRequestAsync(HttpRequest request,
                                                                                               HttpContext httpContext,
                                                                                               ModelStateDictionary modelState,
-                                                                                              string[] permittedExtensions = null,
+                                                                                              string[]? permittedExtensions = null,
                                                                                               long fileSizeLimit = 10485760 /*10 MB*/)
     {
 
@@ -83,24 +83,24 @@ public class WWRequestService : IWWRequestService
                     var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).Value;
                     var encoding = GetEncoding(section);
 
-                    using (var streamReader = new StreamReader(section.Body, encoding, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true))
+                    using var streamReader = new StreamReader(section.Body, encoding, detectEncodingFromByteOrderMarks: true, bufferSize: 1024, leaveOpen: true);
+
+                    // The value length limit is enforced by MultipartBodyLengthLimit
+                    var value = await streamReader.ReadToEndAsync();
+
+                    if (string.Equals(value, "undefined", StringComparison.OrdinalIgnoreCase))
                     {
-                        // The value length limit is enforced by MultipartBodyLengthLimit
-                        var value = await streamReader.ReadToEndAsync();
-
-                        if (string.Equals(value, "undefined", StringComparison.OrdinalIgnoreCase))
-                        {
-                            value = string.Empty;
-                        }
-
-                        formAccumulator.Append(key, value);
-
-                        if (formAccumulator.ValueCount > defaultFormOptions.ValueCountLimit)
-                        {
-                            // Form key count limit of _defaultFormOptions.ValueCountLimit  is exceeded.
-                            throw new InvalidDataException($"Form key count limit {defaultFormOptions.ValueCountLimit} exceeded.");
-                        }
+                        value = string.Empty;
                     }
+
+                    formAccumulator.Append(key, value);
+
+                    if (formAccumulator.ValueCount > defaultFormOptions.ValueCountLimit)
+                    {
+                        // Form key count limit of _defaultFormOptions.ValueCountLimit  is exceeded.
+                        throw new InvalidDataException($"Form key count limit {defaultFormOptions.ValueCountLimit} exceeded.");
+                    }
+
 
                 }
             }
@@ -168,7 +168,7 @@ public class WWRequestService : IWWRequestService
     {
 
         var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out MediaTypeHeaderValue mediaType);
-        
+
         // UTF-7 is insecure and should not be honored. UTF-8 will succeed in most cases.
         if (!hasMediaTypeHeader || Encoding.UTF7.Equals(mediaType.Encoding))
         {
