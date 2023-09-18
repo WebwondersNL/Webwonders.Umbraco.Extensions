@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Web;
 using Umbraco.Cms.Core.Strings;
 
@@ -51,11 +52,10 @@ public static class StringExtensions
         return new HtmlEncodedString(newString);
     }
 
-    ///<summary>
-    /// Indicates whether a specified IHtmlEncodedString is null, empty, or consists only of white-space characters.
-    ///</summary>
-    ///<param name="value">The value to check.</param>
-    ///<returns>Returns true if the value is null, empty, or consists only of white-space characters, otherwise returns false.</returns>
+
+
+
+    [Obsolete("Use IsNullOrWhiteSpace from Umbraco instead")]
     public static bool IsNullOrWhiteSpace(this IHtmlEncodedString value)
     {
         var decoded = HttpUtility.HtmlDecode(value.ToString());

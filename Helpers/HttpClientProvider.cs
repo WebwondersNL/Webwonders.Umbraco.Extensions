@@ -5,7 +5,7 @@
 /// </summary>
 public class HttpClientProvider
 {
-    private static System.Net.Http.HttpClient _httpClient;
+    private static System.Net.Http.HttpClient? _httpClient;
 
     public static System.Net.Http.HttpClient HttpClient { get { return _httpClient ??= new System.Net.Http.HttpClient(); } }
 }
