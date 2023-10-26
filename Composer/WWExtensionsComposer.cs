@@ -20,7 +20,6 @@ public class WWExtensionsComposer : IComposer
             .AddScoped<IWWSearch, WWSearch>()
             .AddScoped<IWWFilter, WWFilter>()
             .AddScoped<IWWCacheService, WWCacheService>()
-            .AddScoped<IWWSpreadsheetHandler, WWSpreadsheetHandler>()
             .AddScoped<IWWApiCallService, WWApiCallService>()
             .AddScoped<IWWLanguage, WWLanguage>()
             .AddScoped<IWWRequestService, WWRequestService>();
