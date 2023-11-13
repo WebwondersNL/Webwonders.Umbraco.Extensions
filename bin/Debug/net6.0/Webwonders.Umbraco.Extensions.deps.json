@@ -32,7 +32,7 @@
   },
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "Webwonders.Umbraco.Extensions/10.5.1": {
+      "Webwonders.Umbraco.Extensions/10.5.3": {
         "dependencies": {
           "NPOI": "2.5.6",
           "NPoco": "5.3.2",
@@ -4699,7 +4699,7 @@
     }
   },
   "libraries": {
-    "Webwonders.Umbraco.Extensions/10.5.1": {
+    "Webwonders.Umbraco.Extensions/10.5.3": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

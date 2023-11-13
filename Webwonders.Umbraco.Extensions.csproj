@@ -8,12 +8,13 @@
         <Product>$(AssemblyName)</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
-        <Version>10.5.1</Version>
+        <Version>10.5.3</Version>
         <Authors>Webwonders</Authors>
         <Company>$(Authors)</Company>
         <Nullable>enable</Nullable>
         <PackageProjectUrl>https://github.com/WebwondersNL/Webwonders.Umbraco.Extensions</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
