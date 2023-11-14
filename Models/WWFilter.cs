@@ -58,7 +58,7 @@ public class FiltersDto
 
     // Name of the filterspage
     [DataMember(Name = "name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = String.Empty;
 
     [DataMember(Name = "filters")]
     public List<FilterDto> Filters { get; set; }
@@ -78,7 +78,7 @@ public class OverviewFilterDto
     public int ParentId { get; set; }
 
     [DataMember(Name = "culture")]
-    public string Culture { get; set; }
+    public string Culture { get; set; } = String.Empty;
 
     [DataMember(Name = "filters")]
     public List<FiltersDto> Filters { get; set; }
@@ -100,8 +100,8 @@ public class OverviewFilterDto
     /// <returns>list of filters</returns>
     public List<FilterDto> GetFilters(string filterName)
     {
-        if (String.IsNullOrWhiteSpace(filterName)) { return null; }
-        return Filters?.FirstOrDefault(x => x.Name == filterName)?.Filters;
+        if (String.IsNullOrWhiteSpace(filterName)) { return new List<FilterDto>(); }
+        return Filters?.FirstOrDefault(x => x.Name == filterName)?.Filters ?? new List<FilterDto>();
     }
 
 

@@ -16,7 +16,7 @@ public interface IWWApiCallService
     /// <typeparam name="T">returntype from API call</typeparam>
     /// <param name="url">address of API</param>
     /// <returns>Tuple of StatusCode and Result (containing response cast to T)</returns>
-    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, HttpClientHandler httpClientHandler = null);
+    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, HttpClientHandler? httpClientHandler = null);
 
 
     /// <summary>
@@ -28,7 +28,7 @@ public interface IWWApiCallService
     /// <param name="username">username passed to API (Basic auth)</param>
     /// <param name="password">password passed to API (Basic auth)</param>
     /// <returns>Tuple of StatusCode and Result (containing response cast to T)</returns>
-    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, string username, string password, HttpClientHandler httpClientHandler = null);
+    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, string username, string password, HttpClientHandler? httpClientHandler = null);
 
 
     /// <summary>
@@ -38,7 +38,7 @@ public interface IWWApiCallService
     /// <param name="url">address of API</param>
     /// <param name="additionalHeaders">additional headers to be passed, for instance: {"apiKey", "apiKey-Value"}</param>
     /// <returns></returns>
-    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, Dictionary<string, string> additionalHeaders, HttpClientHandler httpClientHandler = null);
+    (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, Dictionary<string, string> additionalHeaders, HttpClientHandler? httpClientHandler = null);
 }
 
 
@@ -53,28 +53,28 @@ public class WWApiCallService : IWWApiCallService
     }
 
     /// <inheritdoc/>
-    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, HttpClientHandler clientHandler = null)
+    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, HttpClientHandler? clientHandler = null)
     {
         return Task.Run(async () => await GetApiJson<T>(url, null, null, null, clientHandler)).Result;
     }
 
 
     /// <inheritdoc/>
-    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, string username, string password, HttpClientHandler clientHandler = null)
+    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, string username, string password, HttpClientHandler? clientHandler = null)
     {
         return Task.Run(async () => await GetApiJson<T>(url, username, password, null, clientHandler)).Result;
     }
 
 
     /// <inheritdoc/>
-    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, Dictionary<string, string> additionalHeaders, HttpClientHandler clientHandler = null)
+    public (HttpStatusCode StatusCode, T Result) GetFromApi<T>(string url, Dictionary<string, string> additionalHeaders, HttpClientHandler? clientHandler = null)
     {
         return Task.Run(async () => await GetApiJson<T>(url, null, null, additionalHeaders, clientHandler)).Result;
     }
 
 
     private async Task<(HttpStatusCode StatusCode, T Result)> GetApiJson<T>(string url, string username, string password, Dictionary<string, string> additionalHeaders,
-                        HttpClientHandler httpClientHandler = null)
+                        HttpClientHandler? httpClientHandler = null)
     {
         T result = default;
 

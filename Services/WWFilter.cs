@@ -145,7 +145,7 @@ public class WWFilter : IWWFilter
         // Get all items
         using (var umbracoContextReference = _umbracoContextFactory.EnsureUmbracoContext())
         {
-            if (umbracoContextReference.UmbracoContext.Content.GetById(overviewDto.OverviewFilter.ParentId) is IPublishedContent overviewPage)
+            if (umbracoContextReference?.UmbracoContext?.Content?.GetById(overviewDto.OverviewFilter.ParentId) is IPublishedContent overviewPage)
             {
                 IEnumerable<IPublishedContent> items = overviewPage.Children(_variationContextAccessor, overviewDto.OverviewFilter.Culture).Where(x => x.IsVisible(_publishedValueFallback));
                 foreach (var item in items)
