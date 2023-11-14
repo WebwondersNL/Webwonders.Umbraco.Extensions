@@ -9,10 +9,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Verify commit exists in origin/main
-      run: |
-        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git branch --remote --contains | grep origin/${{ github.ref }}
     - name: Set VERSION variable from tag
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
     - name: Build
@@ -21,4 +17,5 @@ jobs:
       run: dotnet pack Webwonders.Umbraco.Extensions.sln --configuration Release /p:Version=${VERSION} --no-build --output .
     - name: Push
       run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
+     
      
