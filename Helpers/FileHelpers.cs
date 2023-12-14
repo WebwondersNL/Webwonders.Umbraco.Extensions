@@ -22,7 +22,7 @@ public static class FileHelpers
 {
     // If you require a check on specific characters in the IsValidFileExtensionAndSignature
     // method, supply the characters in the _allowedChars field.
-    private static readonly byte[] _allowedChars = Array.Empty<byte>();
+    private static readonly byte[] _allowedChars = [];
 
 
     // For more file signatures, see the File Signatures Database (https://www.filesignatures.net/)
@@ -97,7 +97,7 @@ public static class FileHelpers
         {
             modelState.AddModelError(formFile.Name, $"{fieldDisplayName}({trustedFileNameForDisplay}) is empty.");
 
-            return Array.Empty<byte>();
+            return [];
         }
 
         if (formFile.Length > sizeLimit)
@@ -105,7 +105,7 @@ public static class FileHelpers
             var megabyteSizeLimit = sizeLimit / 1048576;
             modelState.AddModelError(formFile.Name, $"{fieldDisplayName}({trustedFileNameForDisplay}) exceeds " + $"{megabyteSizeLimit:N1} MB.");
 
-            return Array.Empty<byte>();
+            return [];
         }
 
         try
@@ -136,7 +136,7 @@ public static class FileHelpers
             // Log the exception
         }
 
-        return Array.Empty<byte>();
+        return [];
     
     
     }
@@ -159,8 +159,7 @@ public static class FileHelpers
                 var megabyteSizeLimit = sizeLimit / 1048576;
                 modelState.AddModelError("File", $"The file exceeds {megabyteSizeLimit:N1} MB.");
             }
-            else if (!IsValidFileExtensionAndSignature(
-                contentDisposition.FileName.Value, memoryStream, permittedExtensions))
+            else if (contentDisposition?.FileName.Value == null || !IsValidFileExtensionAndSignature(contentDisposition.FileName.Value, memoryStream, permittedExtensions))
             {
                 modelState.AddModelError("File", "The file type isn't permitted or the file's signature doesn't match the file's extension.");
             }
@@ -175,7 +174,7 @@ public static class FileHelpers
             // Log the exception
         }
 
-        return Array.Empty<byte>();
+        return [];
     }
 
 

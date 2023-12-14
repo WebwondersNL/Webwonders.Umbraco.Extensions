@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ContentTargetFolders>.</ContentTargetFolders>
         <PackageId>Webwonders.Umbraco.Extensions</PackageId>
         <Title>Webwonders.Umbraco.Extensions</Title>
@@ -8,7 +8,7 @@
         <Product>$(AssemblyName)</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
-        <Version>10.5.3</Version>
+        <Version>13.0.0</Version>
         <Authors>Webwonders</Authors>
         <Company>$(Authors)</Company>
         <Nullable>enable</Nullable>
@@ -18,9 +18,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NPoco" Version="5.3.2" />
-        <PackageReference Include="NPOI" Version="2.5.6" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="[10,12]" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="[10,12]" />
+        <PackageReference Include="NPoco" Version="5.7.1" />
+        <PackageReference Include="NPOI" Version="2.6.2" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.0.0-rc1" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.0.0-rc1" />
     </ItemGroup>
 </Project>

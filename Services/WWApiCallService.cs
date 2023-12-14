@@ -11,7 +11,7 @@ namespace Webwonders.Extensions;
 public interface IWWApiCallService
 {
     /// <summary>
-    /// Performs Apicall to url and returns statuscode and response cast to T
+    /// Performs Api call to url and returns statuscode and response cast to T
     /// </summary>
     /// <typeparam name="T">returntype from API call</typeparam>
     /// <param name="url">address of API</param>
@@ -20,7 +20,7 @@ public interface IWWApiCallService
 
 
     /// <summary>
-    /// Performs Apicall to url and returns statuscode and response cast to T
+    /// Performs Api call to url and returns statuscode and response cast to T
     /// Username and password are passed as Basic authorization
     /// </summary>
     /// <typeparam name="T">returntype from API call</typeparam>
@@ -32,7 +32,7 @@ public interface IWWApiCallService
 
 
     /// <summary>
-    /// Performs Apicall to url and returns statuscode and response cast to T
+    /// Performs Api call to url and returns statuscode and response cast to T
     /// </summary>
     /// <typeparam name="T">returntype from API call</typeparam>
     /// <param name="url">address of API</param>
@@ -76,7 +76,7 @@ public class WWApiCallService : IWWApiCallService
     private async Task<(HttpStatusCode StatusCode, T Result)> GetApiJson<T>(string url, string? username, string? password, Dictionary<string, string>? additionalHeaders,
                         HttpClientHandler? httpClientHandler = null)
     {
-        T result = default;
+        T result= default;
 
 
         HttpClient httpClient;

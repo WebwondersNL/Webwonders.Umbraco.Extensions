@@ -10,16 +10,17 @@
     <projectUrl>https://github.com/WebwondersNL/Webwonders.Umbraco.Extensions</projectUrl>
     <description>Extensions for Umbraco</description>
     <tags>umbraco plugin package</tags>
+    <repository type="git" commit="a057a1265a0be328185004ffe51e00fa20d83386" />
     <dependencies>
-      <group targetFramework="net6.0">
-        <dependency id="NPOI" version="2.5.6" exclude="Build,Analyzers" />
-        <dependency id="NPoco" version="5.3.2" exclude="Build,Analyzers" />
-        <dependency id="Umbraco.Cms.Web.BackOffice" version="[10.0.0, 12.0.0]" exclude="Build,Analyzers" />
-        <dependency id="Umbraco.Cms.Web.Website" version="[10.0.0, 12.0.0]" exclude="Build,Analyzers" />
+      <group targetFramework="net8.0">
+        <dependency id="NPOI" version="2.6.2" exclude="Build,Analyzers" />
+        <dependency id="NPoco" version="5.7.1" exclude="Build,Analyzers" />
+        <dependency id="Umbraco.Cms.Web.BackOffice" version="13.0.0-rc1" exclude="Build,Analyzers" />
+        <dependency id="Umbraco.Cms.Web.Website" version="13.0.0-rc1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\net6.0\Webwonders.Umbraco.Extensions.dll" target="lib\net6.0\Webwonders.Umbraco.Extensions.dll" />
+    <file src="C:\Users\frans\Source\Repos\Webwonders.Umbraco.Extensions\bin\Debug\net8.0\Webwonders.Umbraco.Extensions.dll" target="lib\net8.0\Webwonders.Umbraco.Extensions.dll" />
   </files>
 </package>
