@@ -8,7 +8,7 @@
         <Product>$(AssemblyName)</Product>
         <PackageTags>umbraco plugin package</PackageTags>
         <RootNamespace>Webwonders.Umbraco.Extensions</RootNamespace>
-        <Version>10.5.3</Version>
+        <Version>13.0.0</Version>
         <Authors>Webwonders</Authors>
         <Company>$(Authors)</Company>
         <Nullable>enable</Nullable>
