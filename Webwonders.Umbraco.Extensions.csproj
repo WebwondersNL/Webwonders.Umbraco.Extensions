@@ -20,7 +20,7 @@
     <ItemGroup>
         <PackageReference Include="NPoco" Version="5.7.1" />
         <PackageReference Include="NPOI" Version="2.6.2" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="13.0.0-rc1" />
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="13.0.0-rc1" />
+        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="[13]" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="[13]" />
     </ItemGroup>
 </Project>
